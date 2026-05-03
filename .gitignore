@@ -1,0 +1,9 @@
+build
+instances
+python/*.so
+MaxSAT-Fuzzer
+*.o
+*.or
+*.od
+*.oh
+*.a
