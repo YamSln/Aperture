@@ -160,7 +160,7 @@ $(TEST_BUILD_DIR)/googletest/%.o: $(GTEST_SRC_DIR)/%.cc
 	$(CXX) -c $(TEST_CXXFLAGS) $< -o $@
 
 $(TEST_EXEC): $(TEST_OBJS) $(LIB_OBJS) $(GTEST_OBJS) $(SOLVER_LIBS)
-	$(CXX) $(TEST_OBJS) $(LIB_OBJS) $(SOLVER_LIBS) $(LDFLAGS) $(TEST_LDFLAGS) -o $@
+	$(CXX) $(TEST_OBJS) $(LIB_OBJS) $(GTEST_OBJS) $(SOLVER_LIBS) $(LDFLAGS) $(TEST_LDFLAGS) -o $@
 
 build-tests: $(TEST_EXEC)
 
