@@ -143,6 +143,13 @@ class Solver {
     return AddPBConstraint(wlits, Predicate::LEQ, rhs, selector);
   }
 
+  // Adds a pseudo-Boolean constraint according to the given predicate:
+  // Σ_i wlits[i].weight * wlits[i].lit < rhs if pred is LT
+  // Σ_i wlits[i].weight * wlits[i].lit <= rhs if pred is LEQ
+  // Note: only supports < and <= currently.
+  bool AddPBConstraint(WLits<TLit, TWeight> wlits, Predicate pred, uint64_t rhs,
+                       std::optional<TLit> selector = std::nullopt);
+
   /* SAT Based Optimization Solving */
 
   // Solving MaxSAT
@@ -269,17 +276,6 @@ class Solver {
   // solver
   TLitValue LitValue(TLit lit, const SatSolver<TLit>& solver) const;
   void InitParamsMap();
-
-  // Cardinality and PB Constrains
-
-  // Adds a pseudo-Boolean constraint according to the given predicate:
-  // Σ_i wlits[i].weight * wlits[i].lit < rhs if pred is LT
-  // Σ_i wlits[i].weight * wlits[i].lit <= rhs if pred is LEQ
-  // Σ_i wlits[i].weight * wlits[i].lit == rhs if pred is EQ
-  // Σ_i wlits[i].weight * wlits[i].lit >= rhs if pred is GEQ
-  // Σ_i wlits[i].weight * wlits[i].lit > rhs if pred is GT
-  bool AddPBConstraint(WLits<TLit, TWeight> wlits, Predicate pred, uint64_t rhs,
-                       std::optional<TLit> selector = std::nullopt);
 
   /* SAT Based Optimization Solving */
 
