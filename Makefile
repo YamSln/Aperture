@@ -127,7 +127,7 @@ release-static:
 	$(MAKE) all RES_FLAGS="$(RELEASE_FLAGS)" STATIC=1
 
 lib-static:
-	$(MAKE) $(TARGET_LIBS) RES_FLAGS="$(RELEASE_FLAGS)" FPIC=1
+	$(MAKE) $(TARGET_LIBS) RES_FLAGS="$(RELEASE_FLAGS)"
 
 ds: dev-static
 rs: release-static
