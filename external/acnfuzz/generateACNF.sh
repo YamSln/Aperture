@@ -10,7 +10,7 @@ else
   exit 1
 fi
 
-# acnf_fuzz expects a non-negative seed that fits in signed 32-bit.
+# acnfuzz expects a non-negative seed that fits in signed 32-bit.
 max_seed=2147483647
 if ! [[ "$seed" =~ ^[0-9]+$ ]]; then
   echo "Seed must be numeric."
@@ -26,9 +26,9 @@ PY
 
 echo "c seed $seed"
 
-if [ -x "$directory/acnf_fuzz" ]; then
-  "$directory/acnf_fuzz" "$seed"
+if [ -x "$directory/acnfuzz" ]; then
+  "$directory/acnfuzz" "$seed"
 else
-  echo "Could not find executable acnf_fuzz in $directory or $directory/acnfuzz"
+  echo "Could not find executable acnfuzz in $directory or $directory/acnfuzz"
   exit 1
 fi

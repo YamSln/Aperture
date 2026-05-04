@@ -7,3 +7,6 @@ MaxSAT-Fuzzer
 *.od
 *.oh
 *.a
+external/acnfuzz/acnfuzz
+external/acnfuzz/BuggedACNFs
+external/acnfuzz/error_log.csv
