@@ -127,6 +127,7 @@ release-static:
 	$(MAKE) all RES_FLAGS="$(RELEASE_FLAGS)" STATIC=1
 
 lib-static:
+	$(MAKE) clean-all
 	$(MAKE) $(TARGET_LIBS) RES_FLAGS="$(RELEASE_FLAGS)"
 
 ds: dev-static
@@ -135,20 +136,31 @@ ls: lib-static
 
 # Tests
 
-TEST_LDFLAGS := -I/usr/include/gtest -lgtest -lgtest_main -lpthread
+GTEST_DIR := $(EXTERNAL_DIR)/googletest-main/googletest
+GTEST_INCLUDE_DIR := $(GTEST_DIR)/include
+GTEST_SRC_DIR := $(GTEST_DIR)/src
+
+TEST_CXXFLAGS := $(CXXFLAGS) -I$(GTEST_DIR) -I$(GTEST_INCLUDE_DIR)
+TEST_LDFLAGS := -lpthread
 TEST_SRC_DIR := ./tests
 TEST_BUILD_DIR := $(BUILD_DIR)/tests
 TEST_SRC_FILES := $(shell find $(TEST_SRC_DIR) -name "*.cc")
 TEST_OBJS := $(patsubst $(TEST_SRC_DIR)/%.cc,$(TEST_BUILD_DIR)/%.o,$(TEST_SRC_FILES))
 TEST_DEPS := $(TEST_OBJS:.o=.d)
+GTEST_SRC_FILES := $(GTEST_SRC_DIR)/gtest-all.cc $(GTEST_SRC_DIR)/gtest_main.cc
+GTEST_OBJS := $(patsubst $(GTEST_SRC_DIR)/%.cc,$(TEST_BUILD_DIR)/googletest/%.o,$(GTEST_SRC_FILES))
 TEST_EXEC := $(BUILD_DIR)/test_suite
 
 $(TEST_BUILD_DIR)/%.o: $(TEST_SRC_DIR)/%.cc
 	@mkdir -p $(dir $@)
-	$(CXX) -c -I$(SRC_DIR) $(CXXFLAGS) $< -o $@
+	$(CXX) -c -I$(SRC_DIR) $(TEST_CXXFLAGS) $< -o $@
 
-$(TEST_EXEC): $(LIB_OBJS) $(TEST_OBJS) $(SOLVER_LIBS)
-	$(CXX) $(LIB_OBJS) $(TEST_OBJS) $(SOLVER_LIBS) $(LDFLAGS) $(TEST_LDFLAGS) -o $@
+$(TEST_BUILD_DIR)/googletest/%.o: $(GTEST_SRC_DIR)/%.cc
+	@mkdir -p $(dir $@)
+	$(CXX) -c $(TEST_CXXFLAGS) $< -o $@
+
+$(TEST_EXEC): $(LIB_OBJS) $(TEST_OBJS) $(GTEST_OBJS) $(SOLVER_LIBS)
+	$(CXX) $(LIB_OBJS) $(TEST_OBJS) $(GTEST_OBJS) $(SOLVER_LIBS) $(LDFLAGS) $(TEST_LDFLAGS) -o $@
 
 build-tests: $(TEST_EXEC)
 
