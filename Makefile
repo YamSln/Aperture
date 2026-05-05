@@ -70,7 +70,7 @@ $(GLUCOSE_LIB):
 
 $(KISSAT_LIB):
 	@echo "Building Kissat library..."
-	cd $(KISSAT_DIR) && (test -f build/makefile || ./configure) && $(MAKE) -C build
+	cd $(KISSAT_DIR) && CC=gcc && (test -f build/makefile || ./configure) && $(MAKE) -C build
 	@echo "Kissat library built successfully"
 
 # Linking
