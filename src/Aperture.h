@@ -203,7 +203,10 @@ class Solver {
 
   // Solving OBV
 
-  SolverStatus SolveOBV(Lits<TLit> assumps, Lits<TLit> targets);
+  SolverStatus SolveOBV(
+      Lits<TLit> assumps, Lits<TLit> targets,
+      std::function<bool(Lits<TLit>, void*)> CallbackOnSolutionFound = nullptr,
+      void* user_ds = nullptr);
 
   /* Output Functions */
 
@@ -368,6 +371,9 @@ class Solver {
   // OBV
 
   SolverStatus SolveInitialSat(Lits<TLit> assumps, Lits<TLit> targets);
-  SolverStatus ObvBS(Lits<TLit> assumps, Lits<TLit> targets);
+  SolverStatus ObvBS(
+      Lits<TLit> assumps, Lits<TLit> targets,
+      std::function<bool(Lits<TLit>, void*)> CallbackOnSolutionFound = nullptr,
+      void* user_ds = nullptr);
 };
 };  // namespace Aperture

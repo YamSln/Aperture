@@ -5,8 +5,9 @@ using namespace std;
 using namespace Aperture;
 
 template <ValidLiteral TLit, ValidWeight TWeight>
-SolverStatus Solver<TLit, TWeight>::SolveOBV(Lits<TLit> assumps,
-                                             Lits<TLit> targets) {
+SolverStatus Solver<TLit, TWeight>::SolveOBV(
+    Lits<TLit> assumps, Lits<TLit> targets,
+    function<bool(Lits<TLit>, void*)> CallbackOnSolutionFound, void* user_ds) {
   if (should_dump_) logger_.DumpSolveOBV(assumps, targets);
 
   CallWhenLeavingScope reenable_dump([&]() { logger_.EnableDump(); });
@@ -21,7 +22,7 @@ SolverStatus Solver<TLit, TWeight>::SolveOBV(Lits<TLit> assumps,
 
   ResetBeforeSolving();
 
-  return ObvBS(assumps, targets);
+  return ObvBS(assumps, targets, CallbackOnSolutionFound, user_ds);
 }
 
 template <ValidLiteral TLit, ValidWeight TWeight>
