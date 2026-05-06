@@ -116,7 +116,7 @@ int WCNFRunner<TLit, TWeight>::Run(const string& wcnf_file_path,
 
   wcnf_data.Clear();
 
-  logger.Log(external, "Done setup. Time: {:.4f}",
+  logger.Log(kExternal, "Done setup. Time: {:.4f}",
              logger.GetExactTimeInSeconds());
 
   /* --------------- Solving --------------- */
@@ -163,20 +163,20 @@ void WCNFRunner<TLit, TWeight>::PrintProblemStatistics(
   size_t soft = wcnf_data.num_soft_clauses;
   size_t total = hard + soft;
 
-  logger.Log(external,
+  logger.Log(kExternal,
              "==========================================================");
-  logger.Log(external, "Problem Statistics");
-  logger.Log(external,
+  logger.Log(kExternal, "Problem Statistics");
+  logger.Log(kExternal,
              "----------------------------------------------------------");
-  logger.Log(external, "{:<28} {:>10}", "Variables:", wcnf_data.max_var);
+  logger.Log(kExternal, "{:<28} {:>10}", "Variables:", wcnf_data.max_var);
   if (soft > 0) {
-    logger.Log(external, "{:<28} {:>10}", "Hard clauses:", hard);
-    logger.Log(external, "{:<28} {:>10}", "Soft clauses:", soft);
+    logger.Log(kExternal, "{:<28} {:>10}", "Hard clauses:", hard);
+    logger.Log(kExternal, "{:<28} {:>10}", "Soft clauses:", soft);
   } else {
-    logger.Log(external, "{:<28} {:>10}", "Clauses:", hard);
+    logger.Log(kExternal, "{:<28} {:>10}", "Clauses:", hard);
   }
 
-  logger.Log(external, "{:<28} {:>10}", "Total clauses:", total);
+  logger.Log(kExternal, "{:<28} {:>10}", "Total clauses:", total);
 
   std::string problem_type;
   if (soft == 0) {
@@ -186,11 +186,11 @@ void WCNFRunner<TLit, TWeight>::PrintProblemStatistics(
     problem_type += (hard > 0 ? " Partial" : "");
     problem_type += " MaxSAT";
   }
-  logger.Log(external, "{:<28} {:>10}", "Problem type:", problem_type);
+  logger.Log(kExternal, "{:<28} {:>10}", "Problem type:", problem_type);
 
-  logger.Log(external, "{:<28} {:>10.4f} seconds",
+  logger.Log(kExternal, "{:<28} {:>10.4f} seconds",
              "Parsing time:", parsing_time_seconds);
-  logger.Log(external,
+  logger.Log(kExternal,
              "==========================================================");
 }
 
@@ -202,7 +202,13 @@ void WCNFRunner<TLit, TWeight>::PrintModel(span<const TLitValue> model) {
   for (TLit v = 1; v <= max_var; ++v) {
     buffer.push_back(model[v] == TLitValue::TRUE ? '1' : '0');
   }
-  logger.LogV(external, fmt::string_view(buffer.data(), buffer.size()));
+  logger.LogV(kPrintRegardless, kExternal,
+              fmt::string_view(buffer.data(), buffer.size()));
+}
+
+template <ValidLiteral TLit, ValidWeight TWeight>
+void WCNFRunner<TLit, TWeight>::PrintValue(TWeight value) {
+  logger.LogO(kPrintRegardless, kExternal, value);
 }
 
 template <ValidLiteral TLit, ValidWeight TWeight>
@@ -215,25 +221,26 @@ void WCNFRunner<TLit, TWeight>::PrintResults() {
   switch (solver_return_status) {
     case SolverStatus::SAT: {
       if (solver->IsLatestMaxSATOptimal()) {
-        logger.LogS(external, "OPTIMUM FOUND");
+        logger.LogS(kPrintRegardless, kExternal, "OPTIMUM FOUND");
       } else {
-        logger.LogS(external, "SATISFIABLE");
+        logger.LogS(kPrintRegardless, kExternal, "SATISFIABLE");
       }
-      solver->PrintLatestMaxSATValue();
+
+      PrintValue(solver->GetLatestMaxSATValue());
       PrintModel(latest_solution);
       break;
     }
     case SolverStatus::UNSAT:
-      logger.LogS(external, "UNSATISFIABLE");
+      logger.LogS(kPrintRegardless, kExternal, "UNSATISFIABLE");
       break;
     case SolverStatus::ERROR:
-      logger.LogS(external, "ERROR");
+      logger.LogS(kPrintRegardless, kExternal, "ERROR");
       break;
     case SolverStatus::GLOBAL_CONTRADICTION:
-      logger.LogS(external, "GLOBAL CONTRADICTION");
+      logger.LogS(kPrintRegardless, kExternal, "GLOBAL CONTRADICTION");
       break;
     case SolverStatus::UNKNOWN:
-      logger.LogS(external, "UNKNOWN");
+      logger.LogS(kPrintRegardless, kExternal, "UNKNOWN");
       break;
   }
 }

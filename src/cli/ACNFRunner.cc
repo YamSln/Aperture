@@ -502,28 +502,28 @@ void ACNFRunner<TLit, TWeight>::PrintSolvingMessage(ProblemType problem_type,
   switch (problem_type) {
     case ProblemType::SAT:
 
-      logger.Log(external, "Solving SAT under {} assumption(s).",
+      logger.Log(kExternal, "Solving SAT under {} assumption(s).",
                  num_assumptions);
       break;
     case ProblemType::MAXSAT:
-      logger.Log(external,
+      logger.Log(kExternal,
                  "Solving Unweighted MaxSAT with {} literals under {} "
                  "assumption(s).",
                  num_literals, num_assumptions);
       break;
     case ProblemType::WEIGHTED_MAXSAT:
-      logger.Log(external,
+      logger.Log(kExternal,
                  "Solving Weighted MaxSAT with {} literals under {} "
                  "assumption(s).",
                  num_literals, num_assumptions);
       break;
     case ProblemType::BLACKBOX:
-      logger.Log(external,
+      logger.Log(kExternal,
                  "Solving BlackBox with {} observables under {} assumption(s).",
                  num_literals, num_assumptions);
       break;
     case ProblemType::OBV:
-      logger.Log(external,
+      logger.Log(kExternal,
                  "Solving OBV with {} targets under {} assumption(s).",
                  num_literals, num_assumptions);
       break;
@@ -541,7 +541,13 @@ void ACNFRunner<TLit, TWeight>::PrintModel(span<const TLitValue> model) {
   for (TLit v : user_vars) {
     buffer.push_back(model[v] == TLitValue::TRUE ? '1' : '0');
   }
-  logger.LogV(external, fmt::string_view(buffer.data(), buffer.size()));
+  logger.LogV(kPrintRegardless, kExternal,
+              fmt::string_view(buffer.data(), buffer.size()));
+}
+
+template <ValidLiteral TLit, ValidWeight TWeight>
+void ACNFRunner<TLit, TWeight>::PrintValue(TWeight value) {
+  logger.LogO(kPrintRegardless, kExternal, value);
 }
 
 template <ValidLiteral TLit, ValidWeight TWeight>
@@ -556,37 +562,37 @@ void ACNFRunner<TLit, TWeight>::PrintResults() {
       switch (problem_type) {
         case ProblemType::SAT:
         case ProblemType::OBV:
-          logger.LogS(external, "SATISFIABLE");
+          logger.LogS(kPrintRegardless, kExternal, "SATISFIABLE");
           break;
         case ProblemType::MAXSAT:
         case ProblemType::WEIGHTED_MAXSAT: {
           if (solver->IsLatestMaxSATOptimal()) {
-            logger.LogS(external, "OPTIMUM FOUND");
+            logger.LogS(kPrintRegardless, kExternal, "OPTIMUM FOUND");
           } else {
-            logger.LogS(external, "SATISFIABLE");
+            logger.LogS(kPrintRegardless, kExternal, "SATISFIABLE");
           }
-          solver->PrintLatestMaxSATValue();
+          PrintValue(solver->GetLatestMaxSATValue());
           break;
         }
         case ProblemType::BLACKBOX:
-          logger.LogS(external, "SATISFIABLE");
-          solver->PrintLatestBlackBoxValue();
+          logger.LogS(kPrintRegardless, kExternal, "SATISFIABLE");
+          PrintValue(solver->GetLatestBlackBoxValue());
           break;
       }
       PrintModel(latest_solution);
       break;
     }
     case SolverStatus::UNSAT:
-      logger.LogS(external, "UNSATISFIABLE");
+      logger.LogS(kPrintRegardless, kExternal, "UNSATISFIABLE");
       break;
     case SolverStatus::ERROR:
-      logger.LogS(external, "ERROR");
+      logger.LogS(kPrintRegardless, kExternal, "ERROR");
       break;
     case SolverStatus::GLOBAL_CONTRADICTION:
-      logger.LogS(external, "GLOBAL CONTRADICTION");
+      logger.LogS(kPrintRegardless, kExternal, "GLOBAL CONTRADICTION");
       break;
     case SolverStatus::UNKNOWN:
-      logger.LogS(external, "UNKNOWN");
+      logger.LogS(kPrintRegardless, kExternal, "UNKNOWN");
       break;
   }
 }
