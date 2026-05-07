@@ -1,7 +1,7 @@
 # Aperture: SAT Based Optimization Tool
 
-Aperture is an anytime and incremental SAT-based optimization tool that supports SAT solving and various SAT based optimization problems, including MaxSAT, Modulo Bit-Vector Optimization (OBV), and Black-Box Optimization - all incrementally under assumptions.
-It provides an Aplication Programming Interface (API) as well as a unified input format called ACNF, which allows to specify clauses, constraints, encodings, and solve types in a flexible manner.
+Aperture is an anytime and incremental SAT-based optimization tool that supports SAT solving and three SAT-based optimization paradigms: MaxSAT, Modulo Bit-Vector Optimization (OBV), and Black-Box Optimization.  Across all three paradigms, the solver is incremental and anytime, while it is complete for MaxSAT and OBV but incomplete for black-box optimization.
+Aperture provides an in-memory C++ (native and IPAMIR) and Python APIs as well as a unified input format called ACNF, which allows to specify clauses, constraints, encodings, and solve types in a flexible manner.
 
 # Features
 
