@@ -94,4 +94,4 @@ void ApertureIpamir<TIpamirLit, TIpamirWeight>::SetTerminate(
              void* state) { return current_terminate_func_(state); };
 }
 
-template class ApertureIpamir<int32_t, uint64_t>;
+template class Aperture::ApertureIpamir<int32_t, uint64_t>;

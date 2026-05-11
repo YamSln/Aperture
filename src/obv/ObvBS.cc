@@ -44,4 +44,4 @@ SolverStatus Solver<TLit, TWeight>::ObvBS(
   return SolverStatus::SAT;
 }
 
-template class Solver<int32_t, uint64_t>;
+template class Aperture::Solver<int32_t, uint64_t>;

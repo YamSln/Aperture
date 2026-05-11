@@ -131,4 +131,4 @@ void KissatSatSolver<TLit>::Interrupt() {
 template <ValidLiteral TLit>
 void KissatSatSolver<TLit>::BumpScore(TLit lit, double val) {}
 
-template class KissatSatSolver<int32_t>;
+template class Aperture::KissatSatSolver<int32_t>;

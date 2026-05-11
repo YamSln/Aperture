@@ -21,4 +21,4 @@ void Solver<TLit, TWeight>::LocalSearchMaxSAT(
   }
 }
 
-template class Solver<int32_t, uint64_t>;
+template class Aperture::Solver<int32_t, uint64_t>;

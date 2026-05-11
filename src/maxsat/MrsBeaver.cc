@@ -13,15 +13,15 @@ void Solver<TLit, TWeight>::MaxSATObvBS(
   vector<TLit> assumptions(assumps.begin(), assumps.end());
   vector<TLit> target_lits;
   target_lits.reserve(targets.size());
-  for (const auto &[weight, lit] : targets) {
+  for (const auto& [weight, lit] : targets) {
     target_lits.push_back(lit);
   }
   Lits<TLit> target_lits_view(target_lits);
 
   auto TotalCostFunc = [&](function<TLitValue(TLit)> LitValueFunc,
-                           void *user_ds) {
+                           void* user_ds) {
     TWeight cost = 0;
-    for (const auto &[weight, lit] : targets) {
+    for (const auto& [weight, lit] : targets) {
       if (LitValueFunc(lit) == TLitValue::TRUE) {
         cost += weight;
       }
@@ -91,20 +91,20 @@ MBExitReason Solver<TLit, TWeight>::MrsBeaver(
   vector<pair<TWeight, TLit>> target_wlits;
   bool problem_weighted = false;
   target_wlits.reserve(targets.size());
-  for (const auto &[weight, lit] : targets) {
+  for (const auto& [weight, lit] : targets) {
     target_wlits.emplace_back(weight, lit);
     problem_weighted |= (weight != 1);
   }
   if (problem_weighted) {
     std::sort(target_wlits.begin(), target_wlits.end(),
-              [](const pair<TWeight, TLit> &a, const pair<TWeight, TLit> &b) {
+              [](const pair<TWeight, TLit>& a, const pair<TWeight, TLit>& b) {
                 return a.first > b.first;
               });
   }
 
   vector<TLit> target_lits;
   target_lits.reserve(target_wlits.size());
-  for (const auto &[weight, lit] : target_wlits) {
+  for (const auto& [weight, lit] : target_wlits) {
     target_lits.push_back(lit);
   }
 
@@ -167,16 +167,16 @@ MBExitReason Solver<TLit, TWeight>::MrsBeaver(
       solver_options_.mrs_beaver_obv_conflict_threshold;
   Polosat(
       assumptions, target_lits,
-      [&](function<TLitValue(TLit)> LitValueFunc, void *user_ds) {
+      [&](function<TLitValue(TLit)> LitValueFunc, void* user_ds) {
         TWeight cost = 0;
-        for (const auto &[weight, lit] : target_wlits) {
+        for (const auto& [weight, lit] : target_wlits) {
           if (LitValueFunc(lit) == TLitValue::TRUE) {
             cost += weight;
           }
         }
         return cost;
       },
-      [&](Lits<TLit>, void *) { return ShouldStopAfterSolutionFound(); },
+      [&](Lits<TLit>, void*) { return ShouldStopAfterSolutionFound(); },
       nullptr, true);
 
   TWeight latest_best_cost = latest_maxsat_value_;
@@ -199,7 +199,7 @@ MBExitReason Solver<TLit, TWeight>::MrsBeaver(
       non_improving_iterations++;
     }
 
-    auto ApplyToEachWeightBlock = [&](auto &&Func) {
+    auto ApplyToEachWeightBlock = [&](auto&& Func) {
       auto start = target_wlits.begin();
       auto it_end = target_wlits.end();
       while (start != it_end) {
@@ -216,7 +216,7 @@ MBExitReason Solver<TLit, TWeight>::MrsBeaver(
       vector<TWeight> cumulative_weights;
       cumulative_weights.reserve(target_wlits.size());
       TWeight sum = 0;
-      for (const auto &[weight, lit] : target_wlits) {
+      for (const auto& [weight, lit] : target_wlits) {
         sum += weight;
         cumulative_weights.push_back(sum);
       }
@@ -285,4 +285,4 @@ MBExitReason Solver<TLit, TWeight>::MrsBeaver(
                                           : MBExitReason::ITERATIONS;
 }
 
-template class Solver<int32_t, uint64_t>;
+template class Aperture::Solver<int32_t, uint64_t>;

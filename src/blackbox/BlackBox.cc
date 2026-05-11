@@ -17,8 +17,8 @@ void Solver<TLit, TWeight>::ResetBlackBox() {
 template <ValidLiteral TLit, ValidWeight TWeight>
 SolverStatus Solver<TLit, TWeight>::SolveBlackBox(
     Lits<TLit> assumps, Lits<TLit> observables,
-    function<TWeight(function<TLitValue(TLit)>, void *)> PbFunc,
-    function<bool(Lits<TLit>, void *)> CallbackOnSolutionFound, void *user_ds) {
+    function<TWeight(function<TLitValue(TLit)>, void*)> PbFunc,
+    function<bool(Lits<TLit>, void*)> CallbackOnSolutionFound, void* user_ds) {
   if (should_dump_) logger_.DumpSolveBlackBox(assumps, observables);
 
   if (!ValidAssumptions(assumps) || !ValidLits(observables)) {
@@ -28,7 +28,7 @@ SolverStatus Solver<TLit, TWeight>::SolveBlackBox(
     return SolverStatus::ERROR;
   }
 
-  auto ShouldExitAfterSolutionFound = [&](Lits<TLit>, void *) {
+  auto ShouldExitAfterSolutionFound = [&](Lits<TLit>, void*) {
     bool exit_by_callback = false;
     if (CallbackOnSolutionFound != nullptr) {
       exit_by_callback = CallbackOnSolutionFound(observables, user_ds);
@@ -47,8 +47,7 @@ void Solver<TLit, TWeight>::PrintLatestBlackBoxValueAndTime() const {
 template <ValidLiteral TLit, ValidWeight TWeight>
 SolverStatus Solver<TLit, TWeight>::SolveInitialSat(
     Lits<TLit> assumps, Lits<TLit> observables,
-    function<TWeight(function<TLitValue(TLit)>, void *)> PbFunc,
-    void *user_ds) {
+    function<TWeight(function<TLitValue(TLit)>, void*)> PbFunc, void* user_ds) {
   reference_wrapper<SatSolver<TLit>> initial_solver = *solver_;
   unique_ptr<SatSolver<TLit>> initial_solver_ptr;
   if (solver_options_.use_initial_solver) {
@@ -76,4 +75,4 @@ SolverStatus Solver<TLit, TWeight>::SolveInitialSat(
   return status;
 }
 
-template class Solver<int32_t, uint64_t>;
+template class Aperture::Solver<int32_t, uint64_t>;

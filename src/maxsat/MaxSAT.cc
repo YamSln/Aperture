@@ -30,7 +30,7 @@ bool Solver<TLit, TWeight>::IsLatestMaxSATFixedModelValue() const {
 template <ValidLiteral TLit, ValidWeight TWeight>
 SolverStatus Solver<TLit, TWeight>::SolveMaxSAT(
     Lits<TLit> assumps, Lits<TLit> lits, bool fix_model_value,
-    function<bool(Lits<TLit>, void *)> CallbackOnSolutionFound, void *user_ds) {
+    function<bool(Lits<TLit>, void*)> CallbackOnSolutionFound, void* user_ds) {
   if (should_dump_) logger_.DumpSolveMaxSAT(assumps, lits);
 
   vector<pair<TWeight, TLit>> wlits;
@@ -38,9 +38,9 @@ SolverStatus Solver<TLit, TWeight>::SolveMaxSAT(
   for (TLit l : lits) {
     wlits.emplace_back(1, l);
   }
-  function<bool(WLits<TLit, TWeight>, void *)> WeightedCallback = nullptr;
+  function<bool(WLits<TLit, TWeight>, void*)> WeightedCallback = nullptr;
   if (CallbackOnSolutionFound != nullptr) {
-    WeightedCallback = [&](WLits<TLit, TWeight> wlits_span, void *ds) -> bool {
+    WeightedCallback = [&](WLits<TLit, TWeight> wlits_span, void* ds) -> bool {
       return CallbackOnSolutionFound(lits, user_ds);
     };
   }
@@ -55,8 +55,8 @@ SolverStatus Solver<TLit, TWeight>::SolveMaxSAT(
 template <ValidLiteral TLit, ValidWeight TWeight>
 SolverStatus Solver<TLit, TWeight>::SolveWeightedMaxSAT(
     Lits<TLit> assumps, WLits<TLit, TWeight> wlits, bool fix_model_value,
-    function<bool(WLits<TLit, TWeight>, void *)> CallbackOnSolutionFound,
-    void *user_ds) {
+    function<bool(WLits<TLit, TWeight>, void*)> CallbackOnSolutionFound,
+    void* user_ds) {
   if (should_dump_) logger_.DumpSolveWeightedMaxSAT(assumps, wlits);
 
   CallWhenLeavingScope reenable_dump([&]() { logger_.EnableDump(); });
@@ -80,7 +80,7 @@ SolverStatus Solver<TLit, TWeight>::SolveWeightedMaxSAT(
   auto SetOptimalityDueToZeroCost = [&]() {
     latest_maxsat_optimal_ = true;
     if (fix_model_value) {
-      for (const auto &[weight, lit] : wlits) AddClause({-lit});
+      for (const auto& [weight, lit] : wlits) AddClause({-lit});
       latest_maxsat_fixed_model_value_ = true;
     }
   };
@@ -166,7 +166,7 @@ void Solver<TLit, TWeight>::SaveAndPrintLatestMaxSATValue(
 
 template <ValidLiteral TLit, ValidWeight TWeight>
 void Solver<TLit, TWeight>::MaxSATSolutionFoundFrom(
-    const SatSolver<TLit> &solver, WLits<TLit, TWeight> wlits) {
+    const SatSolver<TLit>& solver, WLits<TLit, TWeight> wlits) {
   SaveLatestSolutionFromSolver(solver);
   SaveAndPrintLatestMaxSATValue(wlits);
   if (solver_options_.solve_conservatively) {
@@ -181,7 +181,7 @@ void Solver<TLit, TWeight>::MaxSATSolutionFound(WLits<TLit, TWeight> wlits) {
 
 template <ValidLiteral TLit, ValidWeight TWeight>
 void Solver<TLit, TWeight>::MaxSATSolutionFoundFrom(
-    const SatSolver<TLit> &solver, Lits<TLit> lits, TWeight value) {
+    const SatSolver<TLit>& solver, Lits<TLit> lits, TWeight value) {
   SaveLatestSolutionFromSolver(solver);
   latest_maxsat_value_ = value;
   PrintLatestMaxSATValue();
@@ -198,7 +198,7 @@ void Solver<TLit, TWeight>::MaxSATSolutionFound(Lits<TLit> lits,
 
 template <ValidLiteral TLit, ValidWeight TWeight>
 void Solver<TLit, TWeight>::MaxSATSolutionFoundFrom(
-    const SatSolver<TLit> &solver, WLits<TLit, TWeight> wlits, TWeight value) {
+    const SatSolver<TLit>& solver, WLits<TLit, TWeight> wlits, TWeight value) {
   SaveLatestSolutionFromSolver(solver);
   latest_maxsat_value_ = value;
   PrintLatestMaxSATValue();
@@ -259,4 +259,4 @@ SolverStatus Solver<TLit, TWeight>::SolveForMaxSAT(Lits<TLit> assumps,
   return SolverStatus::SAT;
 }
 
-template class Solver<int32_t, uint64_t>;
+template class Aperture::Solver<int32_t, uint64_t>;

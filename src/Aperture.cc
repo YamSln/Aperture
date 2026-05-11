@@ -16,7 +16,7 @@ using namespace Aperture;
 
 template <ValidLiteral TLit, ValidWeight TWeight>
 Solver<TLit, TWeight>::Solver(unique_ptr<SatSolver<TLit>> solver,
-                              const SolverOptions &options)
+                              const SolverOptions& options)
     : solver_(move(solver)),
       solver_options_(options),
       totalizer_(
@@ -31,8 +31,8 @@ Solver<TLit, TWeight>::Solver(unique_ptr<SatSolver<TLit>> solver,
 template <ValidLiteral TLit, ValidWeight TWeight>
 Solver<TLit, TWeight>::Solver(
     SolverType solver_type,
-    const unordered_map<string, string> &sat_solver_params,
-    const SolverOptions &options)
+    const unordered_map<string, string>& sat_solver_params,
+    const SolverOptions& options)
     : Solver(SolverFactory<TLit>::CreateSolver(solver_type, sat_solver_params),
              options) {
   logger_.Log("Using {} as main SAT solver.", SolverTypeToName(solver_type));
@@ -67,14 +67,14 @@ bool Solver<TLit, TWeight>::AddClause(Lits<TLit> clause) {
 }
 
 template <ValidLiteral TLit, ValidWeight TWeight>
-bool Solver<TLit, TWeight>::InitClauses(vector<TLit> &&clauses,
-                                        vector<size_t> &&clause_offsets) {
+bool Solver<TLit, TWeight>::InitClauses(vector<TLit>&& clauses,
+                                        vector<size_t>&& clause_offsets) {
   if (!clauses_.empty()) {
     return false;
   }
 
-  clauses_ = move(clauses);
-  clause_offsets_ = move(clause_offsets);
+  clauses_ = std::move(clauses);
+  clause_offsets_ = std::move(clause_offsets);
 
   size_t num_clauses = clause_offsets_.size() - 1;
   Lits<TLit> all_clauses(clauses_.data(), clauses_.size());
@@ -213,12 +213,12 @@ string Solver<TLit, TWeight>::GetLatestErrorReason() const {
 }
 
 template <ValidLiteral TLit, ValidWeight TWeight>
-void Solver<TLit, TWeight>::SetParam(const string &param_name, double value) {
+void Solver<TLit, TWeight>::SetParam(const string& param_name, double value) {
   auto it = params_map_.find(param_name);
   if (it == params_map_.end()) {
     throw invalid_argument("Unknown parameter name: " + param_name);
   }
-  auto SetParamValue = [&value](auto &&arg) {
+  auto SetParamValue = [&value](auto&& arg) {
     *arg = static_cast<decay_t<decltype(*arg)>>(value);
   };
   visit(SetParamValue, it->second);
@@ -232,7 +232,7 @@ void Solver<TLit, TWeight>::ResetBeforeSolving() {
 
 template <ValidLiteral TLit, ValidWeight TWeight>
 void Solver<TLit, TWeight>::SaveLatestSolutionFromSolver(
-    const SatSolver<TLit> &solver) {
+    const SatSolver<TLit>& solver) {
   SigScopeBlocker block(SIGTERM);
 
   solver.CopyModelTo(latest_solution_);
@@ -257,7 +257,7 @@ bool Solver<TLit, TWeight>::ValidLits(Lits<TLit> lits) const {
 template <ValidLiteral TLit, ValidWeight TWeight>
 bool Solver<TLit, TWeight>::ValidWLits(WLits<TLit, TWeight> wlits) const {
   const TLit max_var = MaxVar();
-  for (const auto &[weight, lit] : wlits) {
+  for (const auto& [weight, lit] : wlits) {
     if (lit_abs<TLit>(lit) > max_var) {
       return false;
     }
@@ -272,7 +272,7 @@ SolverStatus Solver<TLit, TWeight>::SolveLimited(Lits<TLit> assumps) {
 
 template <ValidLiteral TLit, ValidWeight TWeight>
 TLitValue Solver<TLit, TWeight>::LitValue(TLit lit,
-                                          const SatSolver<TLit> &solver) const {
+                                          const SatSolver<TLit>& solver) const {
   return solver.LitValue(lit);
 }
 
@@ -324,7 +324,7 @@ void Solver<TLit, TWeight>::InitParamsMap() {
 }
 
 template <ValidLiteral TLit, ValidWeight TWeight>
-TWeight Solver<TLit, TWeight>::UnweightedCostIn(const SatSolver<TLit> &solver,
+TWeight Solver<TLit, TWeight>::UnweightedCostIn(const SatSolver<TLit>& solver,
                                                 Lits<TLit> lits) const {
   TWeight cost = 0;
   for (TLit lit : lits) {
@@ -348,9 +348,9 @@ TWeight Solver<TLit, TWeight>::UnweightedCost(Lits<TLit> lits) const {
 
 template <ValidLiteral TLit, ValidWeight TWeight>
 TWeight Solver<TLit, TWeight>::WeightedCostIn(
-    const SatSolver<TLit> &solver, WLits<TLit, TWeight> wlits) const {
+    const SatSolver<TLit>& solver, WLits<TLit, TWeight> wlits) const {
   TWeight cost = 0;
-  for (const auto &[weight, lit] : wlits) {
+  for (const auto& [weight, lit] : wlits) {
     if (LitValue(lit, solver) == TLitValue::TRUE) {
       cost += weight;
     }
@@ -361,7 +361,7 @@ TWeight Solver<TLit, TWeight>::WeightedCostIn(
 template <ValidLiteral TLit, ValidWeight TWeight>
 TWeight Solver<TLit, TWeight>::WeightedCost(WLits<TLit, TWeight> wlits) const {
   TWeight cost = 0;
-  for (const auto &[weight, lit] : wlits) {
+  for (const auto& [weight, lit] : wlits) {
     if (LitValue(lit) == TLitValue::TRUE) {
       cost += weight;
     }
@@ -371,7 +371,7 @@ TWeight Solver<TLit, TWeight>::WeightedCost(WLits<TLit, TWeight> wlits) const {
 
 template <ValidLiteral TLit, ValidWeight TWeight>
 void Solver<TLit, TWeight>::FixTargetsPolaritiesOptimisticFor(
-    SatSolver<TLit> &solver, Lits<TLit> targets) {
+    SatSolver<TLit>& solver, Lits<TLit> targets) {
   for (TLit lit : targets) {
     solver.FixPolarity(-lit, true);
   }
@@ -379,8 +379,8 @@ void Solver<TLit, TWeight>::FixTargetsPolaritiesOptimisticFor(
 
 template <ValidLiteral TLit, ValidWeight TWeight>
 void Solver<TLit, TWeight>::FixTargetsPolaritiesOptimisticFor(
-    SatSolver<TLit> &solver, WLits<TLit, TWeight> targets) {
-  for (const auto &[weight, lit] : targets) {
+    SatSolver<TLit>& solver, WLits<TLit, TWeight> targets) {
+  for (const auto& [weight, lit] : targets) {
     solver.FixPolarity(-lit, true);
   }
 }
@@ -415,7 +415,7 @@ template <ValidLiteral TLit, ValidWeight TWeight>
 void Solver<TLit, TWeight>::FixNoneTargetsPolaritiesConservative(
     WLits<TLit, TWeight> targets) {
   unordered_set<TLit> target_set;
-  for (const auto &[weight, lit] : targets) {
+  for (const auto& [weight, lit] : targets) {
     target_set.insert(lit);
   }
   TLit max_var = MaxVar();
@@ -427,7 +427,7 @@ void Solver<TLit, TWeight>::FixNoneTargetsPolaritiesConservative(
 }
 
 template <ValidLiteral TLit, ValidWeight TWeight>
-void Solver<TLit, TWeight>::BumpTargetScoresFor(SatSolver<TLit> &solver,
+void Solver<TLit, TWeight>::BumpTargetScoresFor(SatSolver<TLit>& solver,
                                                 Lits<TLit> targets) {
   for (TLit lit : targets) {
     solver.BumpScore(lit, solver_options_.target_bump_score_value);
@@ -440,13 +440,13 @@ void Solver<TLit, TWeight>::BumpTargetScores(Lits<TLit> targets) {
 }
 
 template <ValidLiteral TLit, ValidWeight TWeight>
-void Solver<TLit, TWeight>::BumpTargetScoresFor(SatSolver<TLit> &solver,
+void Solver<TLit, TWeight>::BumpTargetScoresFor(SatSolver<TLit>& solver,
                                                 WLits<TLit, TWeight> targets) {
   double min_weight = numeric_limits<double>::max();
   double max_weight = 0.;
   double current_weight = 0.;
   bool problem_weighted = false;
-  for (const auto &[weight, lit] : targets) {
+  for (const auto& [weight, lit] : targets) {
     current_weight = static_cast<double>(weight);
     if (current_weight < min_weight) {
       min_weight = current_weight;
@@ -465,7 +465,7 @@ void Solver<TLit, TWeight>::BumpTargetScoresFor(SatSolver<TLit> &solver,
       return max_rand_val == 0 ? 0 : rand() % max_rand_val;
     };
 
-    for (const auto &[weight, lit] : targets) {
+    for (const auto& [weight, lit] : targets) {
       current_weight = static_cast<double>(weight);
       const double bump_val =
           weight_domain == 0
@@ -477,7 +477,7 @@ void Solver<TLit, TWeight>::BumpTargetScoresFor(SatSolver<TLit> &solver,
       solver.BumpScore(lit, bump_val);
     }
   } else {
-    for (const auto &[weight, lit] : targets) {
+    for (const auto& [weight, lit] : targets) {
       solver.BumpScore(lit, solver_options_.target_bump_score_value);
     }
   }
@@ -488,4 +488,4 @@ void Solver<TLit, TWeight>::BumpTargetScores(WLits<TLit, TWeight> targets) {
   BumpTargetScoresFor(*solver_, targets);
 }
 
-template class Solver<int32_t, uint64_t>;
+template class Aperture::Solver<int32_t, uint64_t>;

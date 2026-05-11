@@ -597,4 +597,4 @@ void ACNFRunner<TLit, TWeight>::PrintResults() {
   }
 }
 
-template class ACNFRunner<int32_t, uint64_t>;
+template class Aperture::ACNFRunner<int32_t, uint64_t>;

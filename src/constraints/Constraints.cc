@@ -282,4 +282,4 @@ bool Solver<TLit, TWeight>::AddPBConstraint(WLits<TLit, TWeight> wlits,
   return true;
 }
 
-template class Solver<int32_t, uint64_t>;
+template class Aperture::Solver<int32_t, uint64_t>;

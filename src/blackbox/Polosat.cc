@@ -6,8 +6,8 @@ using namespace Aperture;
 template <ValidLiteral TLit, ValidWeight TWeight>
 SolverStatus Solver<TLit, TWeight>::Polosat(
     Lits<TLit> assumps, Lits<TLit> observables,
-    function<TWeight(function<TLitValue(TLit)>, void *)> PbFunc,
-    function<bool(Lits<TLit>, void *)> CallbackOnSolutionFound, void *user_ds,
+    function<TWeight(function<TLitValue(TLit)>, void*)> PbFunc,
+    function<bool(Lits<TLit>, void*)> CallbackOnSolutionFound, void* user_ds,
     const bool maxsat_call) {
   auto ShouldExitAfterSolutionFound = [&]() {
     bool exit_by_callback = false;
@@ -69,10 +69,10 @@ SolverStatus Solver<TLit, TWeight>::Polosat(
     return (lit > 0) ? current_model[lit] : !current_model[-lit];
   };
 
-  auto ClearNonBadLits = [&](vector<TLit> &bad_lits) {
+  auto ClearNonBadLits = [&](vector<TLit>& bad_lits) {
     bad_lits.erase(
         remove_if(bad_lits.begin(), bad_lits.end(),
-                  [&](TLit &l) { return LitValueFunc(l) != TLitValue::TRUE; }),
+                  [&](TLit& l) { return LitValueFunc(l) != TLitValue::TRUE; }),
         bad_lits.end());
   };
 
@@ -214,9 +214,8 @@ void Solver<TLit, TWeight>::SaveAndPrintLatestBlackBoxValue(TWeight value) {
 
 template <ValidLiteral TLit, ValidWeight TWeight>
 void Solver<TLit, TWeight>::BlackBoxSolutionFoundFrom(
-    const SatSolver<TLit> &solver, Lits<TLit> observables,
-    function<TWeight(function<TLitValue(TLit)>, void *)> PbFunc,
-    void *user_ds) {
+    const SatSolver<TLit>& solver, Lits<TLit> observables,
+    function<TWeight(function<TLitValue(TLit)>, void*)> PbFunc, void* user_ds) {
   SaveLatestSolutionFromSolver(solver);
   auto value = PbFunc(
       [&](TLit lit) -> TLitValue { return LitValue(lit, solver); }, user_ds);
@@ -229,9 +228,8 @@ void Solver<TLit, TWeight>::BlackBoxSolutionFoundFrom(
 template <ValidLiteral TLit, ValidWeight TWeight>
 void Solver<TLit, TWeight>::BlackBoxSolutionFound(
     Lits<TLit> observables,
-    function<TWeight(function<TLitValue(TLit)>, void *)> PbFunc,
-    void *user_ds) {
+    function<TWeight(function<TLitValue(TLit)>, void*)> PbFunc, void* user_ds) {
   BlackBoxSolutionFoundFrom(*solver_, observables, PbFunc, user_ds);
 }
 
-template class Solver<int32_t, uint64_t>;
+template class Aperture::Solver<int32_t, uint64_t>;

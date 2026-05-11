@@ -1,0 +1,26 @@
+CompileFlags:
+  Compiler: /usr/bin/g++
+  Add:
+    - -std=c++20
+    - -Wall
+    - -I/usr/include
+    - -Xclang=-analyzer-checker=modernize,readability,performance
+
+Index:
+  Background: Build
+  StandardLibrary: true
+
+InlayHints:
+  Enabled: true
+  ParameterNames: true
+  DeducedTypes: true
+
+Diagnostics:
+  UnusedIncludes: None
+  MissingIncludes: All
+
+Completion:
+  AllScopes: true
+
+Hover:
+  ShowAKA: true

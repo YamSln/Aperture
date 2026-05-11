@@ -178,4 +178,4 @@ void WCNFData<TLit, TWeight>::SortSoftClausesByWeight() {
   soft_clauses_weights = std::move(new_weights);
 }
 
-template class WCNFData<int32_t, uint64_t>;
+template class Aperture::WCNFData<int32_t, uint64_t>;

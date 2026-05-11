@@ -148,4 +148,4 @@ void GlucoseSatSolver<TLit>::BumpScore(TLit lit, double val) {
   glucose_.varBumpActivity(var, val);
 }
 
-template class GlucoseSatSolver<int32_t>;
+template class Aperture::GlucoseSatSolver<int32_t>;

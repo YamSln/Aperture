@@ -15,7 +15,7 @@ void Solver<TLit, TWeight>::LSU(Lits<TLit> assumps,
 
   vector<TLit> assumptions(assumps.begin(), assumps.end());
   bool problem_weighted = false;
-  for (const auto &[weight, lit] : targets) {
+  for (const auto& [weight, lit] : targets) {
     problem_weighted |= (weight != 1);
   }
 
@@ -62,12 +62,12 @@ void Solver<TLit, TWeight>::LSU(Lits<TLit> assumps,
       // Each totalizer bit corresponds to a possible upper bound on the cost
       vector<pair<TWeight, TLit>> tot;
       if (problem_weighted) {
-        tot = move(complete_part_totalizer.EncodeGenTotalizer(
+        tot = std::move(complete_part_totalizer.EncodeGenTotalizer(
             targets, selector, latest_maxsat_value_ - 1));
       } else {
         vector<TLit> target_lits;
         target_lits.reserve(targets.size());
-        for (const auto &[weight, lit] : targets) {
+        for (const auto& [weight, lit] : targets) {
           target_lits.push_back(lit);
         }
         vector<TLit> totalizer = complete_part_totalizer.EncodeTotalizer(
@@ -140,7 +140,7 @@ void Solver<TLit, TWeight>::LSU(Lits<TLit> assumps,
 
       AdderBits<TLit> adder_bound =
           complete_part_adder.LessThanOrEqualBits(targets);
-      const vector<TLit> &adder_bound_lits = adder_bound.Bits();
+      const vector<TLit>& adder_bound_lits = adder_bound.Bits();
       assumptions.insert(assumptions.end(), adder_bound_lits.begin(),
                          adder_bound_lits.end());
       size_t num_bound_bits = adder_bound.size();
@@ -177,4 +177,4 @@ void Solver<TLit, TWeight>::LSU(Lits<TLit> assumps,
   logger_.Log("LSU finished with optimal value: {}.", latest_maxsat_value_);
 }
 
-template class Solver<int32_t, uint64_t>;
+template class Aperture::Solver<int32_t, uint64_t>;

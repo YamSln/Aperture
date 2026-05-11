@@ -22,27 +22,27 @@ void Solver<TLit, TWeight>::NuWLS(
     unsigned long long unsat_assumps_soft_weight = 0;
 
     unordered_map<TLit, TWeight> target_lit_to_weights;
-    for (const auto &[weight, lit] : wlits) {
+    for (const auto& [weight, lit] : wlits) {
       target_lit_to_weights[lit] += weight;
       nuwls_topclauseweight += weight;
       if (weight != 1) nuwls_solver.problem_weighted = 1;
     }
     nuwls_topclauseweight += 1;
 
-    nuwls::clauselit **nuwls_clause_lit;
-    int *nuwls_clause_lit_count;
+    nuwls::clauselit** nuwls_clause_lit;
+    int* nuwls_clause_lit_count;
     int nuwls_nvars = MaxVar();
     int nuwls_nclauses = clauses_.size();
-    unsigned long long *nuwls_clause_weight;
+    unsigned long long* nuwls_clause_weight;
 
     const int problem_weighted = nuwls_solver.problem_weighted;
 
     // nuwls_num_hclauses: the number of hard clauses
-    nuwls_clause_lit = new nuwls::clauselit *[nuwls_nclauses + 10];
+    nuwls_clause_lit = new nuwls::clauselit*[nuwls_nclauses + 10];
     nuwls_clause_lit_count = new int[nuwls_nclauses + 10];
     nuwls_clause_weight = new unsigned long long[nuwls_nclauses + 10];
 
-    int *redunt_test = new int[nuwls_nvars + 10];
+    int* redunt_test = new int[nuwls_nvars + 10];
     memset(redunt_test, 0, sizeof(int) * (nuwls_nvars + 10));
 
     int tem_v, tem_sense, tem_lit_count;
@@ -70,7 +70,7 @@ void Solver<TLit, TWeight>::NuWLS(
           latest_solution_[v] = TLitValue::TRUE;
       }
 
-      for (const auto &[clause_idx, relaxed_by] : clause_relaxed_by) {
+      for (const auto& [clause_idx, relaxed_by] : clause_relaxed_by) {
         // Clause UNSAT -> Relaxation literal must be SAT
         if (nuwls_solver.sat_count[clause_idx] == 0) {
           latest_solution_[lit_abs(relaxed_by)] =
@@ -253,7 +253,7 @@ void Solver<TLit, TWeight>::NuWLS(
         }
       }
 
-      for (const auto &[weight, lit] : wlits) {
+      for (const auto& [weight, lit] : wlits) {
         // Skip relaxation literals
         if (targets_num_appearences[lit] == 1 &&
             target_lit_to_weights.count(-lit) == 0) {
@@ -377,4 +377,4 @@ void Solver<TLit, TWeight>::NuWLS(
   }
 }
 
-template class Solver<int32_t, uint64_t>;
+template class Aperture::Solver<int32_t, uint64_t>;

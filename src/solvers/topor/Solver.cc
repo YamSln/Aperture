@@ -96,4 +96,4 @@ void ToporSatSolver<TLit>::BumpScore(TLit lit, double val) {
   topor_.BoostScore(lit_abs<TLit>(lit), val);
 }
 
-template class ToporSatSolver<int32_t>;
+template class Aperture::ToporSatSolver<int32_t>;

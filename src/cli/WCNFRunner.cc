@@ -83,8 +83,8 @@ int WCNFRunner<TLit, TWeight>::Run(const string& wcnf_file_path,
     solver->NewVar();
   }
 
-  vector<TLit> clauses = move(wcnf_data.hard_clauses);
-  vector<size_t> offsets = move(wcnf_data.hard_offsets);
+  vector<TLit> clauses = std::move(wcnf_data.hard_clauses);
+  vector<size_t> offsets = std::move(wcnf_data.hard_offsets);
   clauses.reserve(clauses.size() + wcnf_data.soft_clauses.size());
   offsets.reserve(offsets.size() + wcnf_data.soft_offsets.size());
 
@@ -245,4 +245,4 @@ void WCNFRunner<TLit, TWeight>::PrintResults() {
   }
 }
 
-template class WCNFRunner<int32_t, uint64_t>;
+template class Aperture::WCNFRunner<int32_t, uint64_t>;

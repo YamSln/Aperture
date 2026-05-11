@@ -142,13 +142,13 @@ using Clock = std::chrono::steady_clock;
 
 // A literal is valid if it is signed and a power of two.
 template <typename T>
-concept ValidLiteral = std::signed_integral<T> &&
-    std::has_single_bit(sizeof(T));
+concept ValidLiteral =
+    std::signed_integral<T> && std::has_single_bit(sizeof(T));
 
 // A weight is valid if it is unsigned and a power of two.
 template <typename T>
-concept ValidWeight = std::unsigned_integral<T> &&
-    std::has_single_bit(sizeof(T));
+concept ValidWeight =
+    std::unsigned_integral<T> && std::has_single_bit(sizeof(T));
 
 template <ValidLiteral TLit, ValidWeight TWeight>
 using WLits = std::span<const std::pair<TWeight, TLit>>;

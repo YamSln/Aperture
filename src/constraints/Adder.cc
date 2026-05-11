@@ -216,4 +216,4 @@ bool Adder<TLit, TWeight>::AddQuadClause(TLit a, TLit b, TLit c, TLit d,
   }
 }
 
-template class Adder<int32_t, uint64_t>;
+template class Aperture::Adder<int32_t, uint64_t>;

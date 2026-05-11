@@ -96,4 +96,4 @@ void CadicalSatSolver<TLit>::Interrupt() {
 template <ValidLiteral TLit>
 void CadicalSatSolver<TLit>::BumpScore(TLit lit, double val) {}
 
-template class CadicalSatSolver<int32_t>;
+template class Aperture::CadicalSatSolver<int32_t>;

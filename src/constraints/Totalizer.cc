@@ -16,7 +16,7 @@ vector<TLit> Totalizer<TLit, TWeight>::EncodeTotalizer(
   const uint64_t rhs_simp_limit =
       should_rhs_simplify ? rhs_simplification.value() + 1 : 0;
 
-  auto AddClauseFunc = [&](vector<TLit> &clause) {
+  auto AddClauseFunc = [&](vector<TLit>& clause) {
     if (should_add_selector) {
       clause.push_back(selector_lit);
     }
@@ -27,7 +27,7 @@ vector<TLit> Totalizer<TLit, TWeight>::EncodeTotalizer(
     return should_rhs_simplify ? min(value, rhs_simp_limit) : value;
   };
 
-  auto Merge = [&](const vector<TLit> &left, const vector<TLit> &right) {
+  auto Merge = [&](const vector<TLit>& left, const vector<TLit>& right) {
     uint64_t merged_max_size = left.size() + right.size();
     uint64_t merged_size = CheckRhsSimplification(merged_max_size);
     vector<TLit> merged;
@@ -40,9 +40,9 @@ vector<TLit> Totalizer<TLit, TWeight>::EncodeTotalizer(
 
   vector<TLit> clause;
   clause.reserve(3);
-  auto AddParentClauses = [&](const vector<TLit> &left,
-                              const vector<TLit> &right,
-                              const vector<TLit> &parent) {
+  auto AddParentClauses = [&](const vector<TLit>& left,
+                              const vector<TLit>& right,
+                              const vector<TLit>& parent) {
     size_t left_size = left.size();
     size_t right_size = right.size();
     size_t parent_size = parent.size();
@@ -67,9 +67,9 @@ vector<TLit> Totalizer<TLit, TWeight>::EncodeTotalizer(
     }
   };
 
-  auto AddParentClausesLEQ = [&](const vector<TLit> &left,
-                                 const vector<TLit> &right,
-                                 const vector<TLit> &parent) {
+  auto AddParentClausesLEQ = [&](const vector<TLit>& left,
+                                 const vector<TLit>& right,
+                                 const vector<TLit>& parent) {
     size_t left_size = left.size();
     size_t right_size = right.size();
     for (size_t a = 0; a < left_size; a++) {
@@ -104,21 +104,21 @@ vector<TLit> Totalizer<TLit, TWeight>::EncodeTotalizer(
 
   deque<vector<TLit>> q;
   for (TLit lit : lits) {
-    vector<TLit> &leaf_node = q.emplace_back();
+    vector<TLit>& leaf_node = q.emplace_back();
     leaf_node.emplace_back(lit);
   }
 
   while (q.size() > 1) {
-    vector<TLit> left = move(q.front());
+    vector<TLit> left = std::move(q.front());
     q.pop_front();
-    vector<TLit> right = move(q.front());
+    vector<TLit> right = std::move(q.front());
     q.pop_front();
     vector<TLit> parent = Merge(left, right);
     leq_simplification ? AddParentClausesLEQ(left, right, parent)
                        : AddParentClauses(left, right, parent);
     q.push_back(move(parent));
   }
-  vector<TLit> output = move(q.front());
+  vector<TLit> output = std::move(q.front());
   q.pop_front();
 
   return output;
@@ -135,7 +135,7 @@ vector<pair<TWeight, TLit>> Totalizer<TLit, TWeight>::EncodeGenTotalizer(
   const uint64_t rhs_simp_limit =
       should_rhs_simplify ? rhs_simplification.value() + 1 : 0;
 
-  auto AddClauseFunc = [&](vector<TLit> &clause) {
+  auto AddClauseFunc = [&](vector<TLit>& clause) {
     if (should_add_selector) {
       clause.push_back(selector_lit);
     }
@@ -148,8 +148,8 @@ vector<pair<TWeight, TLit>> Totalizer<TLit, TWeight>::EncodeGenTotalizer(
 
   vector<TLit> clause;
   clause.reserve(3);
-  auto AddAndMerge = [&](const vector<pair<TWeight, TLit>> &left,
-                         const vector<pair<TWeight, TLit>> &right) {
+  auto AddAndMerge = [&](const vector<pair<TWeight, TLit>>& left,
+                         const vector<pair<TWeight, TLit>>& right) {
     // Find all possible weights and create variables for them
     size_t reserved_size =
         left.size() + right.size() + left.size() * right.size();
@@ -164,21 +164,21 @@ vector<pair<TWeight, TLit>> Totalizer<TLit, TWeight>::EncodeGenTotalizer(
       }
     };
 
-    for (const auto &[l_weight, l_lit] : left) {
+    for (const auto& [l_weight, l_lit] : left) {
       InsertWeight(l_weight);
     }
-    for (const auto &[r_weight, r_lit] : right) {
+    for (const auto& [r_weight, r_lit] : right) {
       InsertWeight(r_weight);
     }
-    for (const auto &[l_weight, l_lit] : left) {
-      for (const auto &[r_weight, r_lit] : right) {
+    for (const auto& [l_weight, l_lit] : left) {
+      for (const auto& [r_weight, r_lit] : right) {
         InsertWeight(l_weight + r_weight);
       }
     }
 
     // Add clauses
-    for (const auto &[l_weight, l_lit] : left) {
-      for (const auto &[r_weight, r_lit] : right) {
+    for (const auto& [l_weight, l_lit] : left) {
+      for (const auto& [r_weight, r_lit] : right) {
         TWeight p_weight = l_weight + r_weight;
         if (should_rhs_simplify) {
           if (l_weight >= rhs_simp_limit || r_weight >= rhs_simp_limit) {
@@ -194,14 +194,14 @@ vector<pair<TWeight, TLit>> Totalizer<TLit, TWeight>::EncodeGenTotalizer(
         AddClauseFunc(clause);
       }
     }
-    for (const auto &[weight, lit] : left) {
+    for (const auto& [weight, lit] : left) {
       // (-sw v pw') where sw is from Q
       clause.clear();
       clause.push_back(-lit);
       clause.push_back(weight_to_lit[CheckRhsSimplification(weight)]);
       AddClauseFunc(clause);
     }
-    for (const auto &[weight, lit] : right) {
+    for (const auto& [weight, lit] : right) {
       // (-sw v pw') where sw is from R
       clause.clear();
       clause.push_back(-lit);
@@ -212,7 +212,7 @@ vector<pair<TWeight, TLit>> Totalizer<TLit, TWeight>::EncodeGenTotalizer(
     // Create a merged node of left and right
     vector<pair<TWeight, TLit>> merged;
     merged.reserve(weight_to_lit.size());
-    for (const auto &[weight, lit] : weight_to_lit) {
+    for (const auto& [weight, lit] : weight_to_lit) {
       merged.emplace_back(weight, lit);
     }
     return merged;
@@ -221,20 +221,20 @@ vector<pair<TWeight, TLit>> Totalizer<TLit, TWeight>::EncodeGenTotalizer(
   deque<vector<pair<TWeight, TLit>>> q;
   vector<pair<TWeight, TLit>> wlits_vector(wlits.begin(), wlits.end());
   sort(wlits_vector.begin(), wlits_vector.end());
-  for (const auto &[weight, lit] : wlits_vector) {
-    auto &leaf_node = q.emplace_back();
+  for (const auto& [weight, lit] : wlits_vector) {
+    auto& leaf_node = q.emplace_back();
     leaf_node.emplace_back(weight, lit);
   }
 
   while (q.size() > 1) {
-    vector<pair<TWeight, TLit>> left = move(q.front());
+    vector<pair<TWeight, TLit>> left = std::move(q.front());
     q.pop_front();
-    vector<pair<TWeight, TLit>> right = move(q.front());
+    vector<pair<TWeight, TLit>> right = std::move(q.front());
     q.pop_front();
     vector<pair<TWeight, TLit>> parent = AddAndMerge(left, right);
     q.push_back(move(parent));
   }
-  vector<pair<TWeight, TLit>> output = move(q.front());
+  vector<pair<TWeight, TLit>> output = std::move(q.front());
   q.pop_front();
   sort(output.begin(), output.end());
 
@@ -255,8 +255,8 @@ bool Totalizer<TLit, TWeight>::IsLeqTotExceedsThr(
   };
 
   uint64_t clause_count = 0;
-  auto CountParentClauses = [&](const vector<TLit> &left,
-                                const vector<TLit> &right) {
+  auto CountParentClauses = [&](const vector<TLit>& left,
+                                const vector<TLit>& right) {
     size_t left_size = left.size();
     size_t right_size = right.size();
     clause_count += left_size + right_size;
@@ -274,14 +274,14 @@ bool Totalizer<TLit, TWeight>::IsLeqTotExceedsThr(
 
   deque<vector<TLit>> q;
   for (TLit lit : lits) {
-    vector<TLit> &leaf_node = q.emplace_back();
+    vector<TLit>& leaf_node = q.emplace_back();
     leaf_node.emplace_back(lit);
   }
 
   while (q.size() > 1) {
-    vector<TLit> left = move(q.front());
+    vector<TLit> left = std::move(q.front());
     q.pop_front();
-    vector<TLit> right = move(q.front());
+    vector<TLit> right = std::move(q.front());
     q.pop_front();
     CountParentClauses(left, right);
     if (clause_count > clauses_threshold) return false;
@@ -308,8 +308,8 @@ bool Totalizer<TLit, TWeight>::IsLeqGenTotExceedsThr(
   };
 
   uint64_t clause_count = 0;
-  auto CountAndMerge = [&](const vector<pair<TWeight, TLit>> &left,
-                           const vector<pair<TWeight, TLit>> &right,
+  auto CountAndMerge = [&](const vector<pair<TWeight, TLit>>& left,
+                           const vector<pair<TWeight, TLit>>& right,
                            size_t parent_size) {
     unordered_map<TWeight, TLit> weight_to_lit;
     weight_to_lit.reserve(parent_size);
@@ -319,14 +319,14 @@ bool Totalizer<TLit, TWeight>::IsLeqGenTotExceedsThr(
       weight_to_lit.try_emplace(weight, 0);
     };
 
-    for (const auto &[l_weight, l_lit] : left) {
+    for (const auto& [l_weight, l_lit] : left) {
       InsertWeight(l_weight);
     }
-    for (const auto &[r_weight, r_lit] : right) {
+    for (const auto& [r_weight, r_lit] : right) {
       InsertWeight(r_weight);
     }
-    for (const auto &[l_weight, l_lit] : left) {
-      for (const auto &[r_weight, r_lit] : right) {
+    for (const auto& [l_weight, l_lit] : left) {
+      for (const auto& [r_weight, r_lit] : right) {
         InsertWeight(l_weight + r_weight);
       }
     }
@@ -334,8 +334,8 @@ bool Totalizer<TLit, TWeight>::IsLeqGenTotExceedsThr(
     // Count clauses
     clause_count += left.size() + right.size();
     if (clause_count > clauses_threshold) return vector<pair<TWeight, TLit>>();
-    for (const auto &[l_weight, l_lit] : left) {
-      for (const auto &[r_weight, r_lit] : right) {
+    for (const auto& [l_weight, l_lit] : left) {
+      for (const auto& [r_weight, r_lit] : right) {
         if (should_rhs_simplify &&
             (l_weight >= rhs_simp_limit || r_weight >= rhs_simp_limit)) {
           continue;
@@ -348,7 +348,7 @@ bool Totalizer<TLit, TWeight>::IsLeqGenTotExceedsThr(
     // Create a merged node of left and right
     vector<pair<TWeight, TLit>> merged;
     merged.reserve(weight_to_lit.size());
-    for (const auto &[weight, lit] : weight_to_lit) {
+    for (const auto& [weight, lit] : weight_to_lit) {
       merged.emplace_back(weight, lit);
     }
     return merged;
@@ -357,15 +357,15 @@ bool Totalizer<TLit, TWeight>::IsLeqGenTotExceedsThr(
   deque<vector<pair<TWeight, TLit>>> q;
   vector<pair<TWeight, TLit>> wlits_vector(wlits.begin(), wlits.end());
   sort(wlits_vector.begin(), wlits_vector.end());
-  for (const auto &[weight, lit] : wlits_vector) {
-    auto &leaf_node = q.emplace_back();
+  for (const auto& [weight, lit] : wlits_vector) {
+    auto& leaf_node = q.emplace_back();
     leaf_node.emplace_back(weight, lit);
   }
 
   while (q.size() > 1) {
-    vector<pair<TWeight, TLit>> left = move(q.front());
+    vector<pair<TWeight, TLit>> left = std::move(q.front());
     q.pop_front();
-    vector<pair<TWeight, TLit>> right = move(q.front());
+    vector<pair<TWeight, TLit>> right = std::move(q.front());
     q.pop_front();
     size_t parent_size =
         left.size() + right.size() + left.size() * right.size();
@@ -381,4 +381,4 @@ bool Totalizer<TLit, TWeight>::IsLeqGenTotExceedsThr(
   return clause_count <= clauses_threshold;
 }
 
-template class Totalizer<int32_t, uint64_t>;
+template class Aperture::Totalizer<int32_t, uint64_t>;

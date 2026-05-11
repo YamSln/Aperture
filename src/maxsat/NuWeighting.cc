@@ -22,29 +22,29 @@ void Solver<TLit, TWeight>::NuWeighting(
     unsigned long long unsat_assumps_soft_weight = 0;
 
     unordered_map<TLit, TWeight> target_lit_to_weights;
-    for (const auto &[weight, lit] : wlits) {
+    for (const auto& [weight, lit] : wlits) {
       target_lit_to_weights[lit] += weight;
       nuweighting_topclauseweight += weight;
       if (weight != 1) nuweighting_solver.problem_weighted = 1;
     }
     nuweighting_topclauseweight += 1;
 
-    nuweighting::clauselit **nuweighting_clause_lit;
-    int *nuweighting_clause_lit_count;
+    nuweighting::clauselit** nuweighting_clause_lit;
+    int* nuweighting_clause_lit_count;
     int nuweighting_nvars = MaxVar();
     int nuweighting_nclauses = clauses_.size();
-    unsigned long long *nuweighting_clause_weight;
+    unsigned long long* nuweighting_clause_weight;
 
     const int problem_weighted = nuweighting_solver.problem_weighted;
 
     // nuweighting_num_hclauses: the number of hard clauses
     nuweighting_clause_lit =
-        new nuweighting::clauselit *[nuweighting_nclauses + 10];
+        new nuweighting::clauselit*[nuweighting_nclauses + 10];
     nuweighting_clause_lit_count = new int[nuweighting_nclauses + 10];
     nuweighting_clause_weight =
         new unsigned long long[nuweighting_nclauses + 10];
 
-    int *redunt_test = new int[nuweighting_nvars + 10];
+    int* redunt_test = new int[nuweighting_nvars + 10];
     memset(redunt_test, 0, sizeof(int) * (nuweighting_nvars + 10));
 
     int tem_v, tem_sense, tem_lit_count;
@@ -74,7 +74,7 @@ void Solver<TLit, TWeight>::NuWeighting(
           latest_solution_[v] = TLitValue::TRUE;
       }
 
-      for (const auto &[clause_idx, relaxed_by] : clause_relaxed_by) {
+      for (const auto& [clause_idx, relaxed_by] : clause_relaxed_by) {
         // Clause UNSAT -> Relaxation literal must be SAT
         if (nuweighting_solver.sat_count[clause_idx] == 0) {
           latest_solution_[lit_abs(relaxed_by)] =
@@ -257,7 +257,7 @@ void Solver<TLit, TWeight>::NuWeighting(
         }
       }
 
-      for (const auto &[weight, lit] : wlits) {
+      for (const auto& [weight, lit] : wlits) {
         // Skip relaxation literals
         if (targets_num_appearences[lit] == 1 &&
             target_lit_to_weights.count(-lit) == 0) {
@@ -436,4 +436,4 @@ void Solver<TLit, TWeight>::NuWeighting(
   }
 }
 
-template class Solver<int32_t, uint64_t>;
+template class Aperture::Solver<int32_t, uint64_t>;
