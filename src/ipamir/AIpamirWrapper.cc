@@ -1,7 +1,5 @@
 #include "AIpamirWrapper.h"
 
-#include "ATypes.h"
-
 using namespace std;
 using namespace Aperture;
 
