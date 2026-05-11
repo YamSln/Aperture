@@ -64,7 +64,7 @@
   "[cpp]": {
     "editor.defaultFormatter": "llvm-vs-code-extensions.vscode-clangd",
     "editor.formatOnSave": true,
-    "editor.inlayHints.enabled": true
+    "editor.inlayHints.enabled": "on"
   },
   "[c]": {
     "editor.defaultFormatter": "llvm-vs-code-extensions.vscode-clangd",

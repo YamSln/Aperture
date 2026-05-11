@@ -1,9 +1,11 @@
 #include "AIpamirWrapper.h"
 
+#include "ATypes.h"
+
 using namespace std;
 using namespace Aperture;
 
-template <typename TIpamirLit, typename TIpamirWeight>
+template <ValidLiteral TIpamirLit, ValidWeight TIpamirWeight>
 void ApertureIpamir<TIpamirLit, TIpamirWeight>::AddHard(TIpamirLit lit) {
   if (lit == 0) {
     this->AddClause(current_clause_);
@@ -14,7 +16,7 @@ void ApertureIpamir<TIpamirLit, TIpamirWeight>::AddHard(TIpamirLit lit) {
   }
 }
 
-template <typename TIpamirLit, typename TIpamirWeight>
+template <ValidLiteral TIpamirLit, ValidWeight TIpamirWeight>
 void ApertureIpamir<TIpamirLit, TIpamirWeight>::AddSoftLit(
     TIpamirLit lit, TIpamirWeight weight) {
   auto it = soft_lit_to_index_.find(lit);
@@ -26,12 +28,12 @@ void ApertureIpamir<TIpamirLit, TIpamirWeight>::AddSoftLit(
   }
 }
 
-template <typename TIpamirLit, typename TIpamirWeight>
+template <ValidLiteral TIpamirLit, ValidWeight TIpamirWeight>
 void ApertureIpamir<TIpamirLit, TIpamirWeight>::Assume(TIpamirLit lit) {
   assumptions_.push_back(lit);
 }
 
-template <typename TIpamirLit, typename TIpamirWeight>
+template <ValidLiteral TIpamirLit, ValidWeight TIpamirWeight>
 int ApertureIpamir<TIpamirLit, TIpamirWeight>::Solve() {
   SolverStatus status =
       this->SolveWeightedMaxSAT(assumptions_, soft_lits_, false,
@@ -51,13 +53,13 @@ int ApertureIpamir<TIpamirLit, TIpamirWeight>::Solve() {
   }
 }
 
-template <typename TIpamirLit, typename TIpamirWeight>
+template <ValidLiteral TIpamirLit, ValidWeight TIpamirWeight>
 TIpamirWeight ApertureIpamir<TIpamirLit, TIpamirWeight>::GetObjectiveValue()
     const {
   return this->GetLatestMaxSATValue();
 }
 
-template <typename TIpamirLit, typename TIpamirWeight>
+template <ValidLiteral TIpamirLit, ValidWeight TIpamirWeight>
 TIpamirLit ApertureIpamir<TIpamirLit, TIpamirWeight>::GetLitValue(
     TIpamirLit lit) const {
   TLitValue val = this->LitValue(lit);
@@ -71,7 +73,7 @@ TIpamirLit ApertureIpamir<TIpamirLit, TIpamirWeight>::GetLitValue(
   }
 }
 
-template <typename TIpamirLit, typename TIpamirWeight>
+template <ValidLiteral TIpamirLit, ValidWeight TIpamirWeight>
 void ApertureIpamir<TIpamirLit, TIpamirWeight>::SetTerminate(
     void* state, int (*terminate)(void* state)) {
   if (terminate == nullptr) {

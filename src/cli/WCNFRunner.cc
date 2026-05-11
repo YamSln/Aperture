@@ -112,7 +112,7 @@ int WCNFRunner<TLit, TWeight>::Run(const string& wcnf_file_path,
 
   // Add clauses
 
-  solver->InitClauses(move(clauses), move(offsets));
+  solver->InitClauses(std::move(clauses), std::move(offsets));
 
   wcnf_data.Clear();
 

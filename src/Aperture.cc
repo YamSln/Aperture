@@ -17,7 +17,7 @@ using namespace Aperture;
 template <ValidLiteral TLit, ValidWeight TWeight>
 Solver<TLit, TWeight>::Solver(unique_ptr<SatSolver<TLit>> solver,
                               const SolverOptions& options)
-    : solver_(move(solver)),
+    : solver_(std::move(solver)),
       solver_options_(options),
       totalizer_(
           [this]() { return this->NewVar(); },

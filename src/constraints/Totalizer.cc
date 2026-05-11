@@ -116,7 +116,7 @@ vector<TLit> Totalizer<TLit, TWeight>::EncodeTotalizer(
     vector<TLit> parent = Merge(left, right);
     leq_simplification ? AddParentClausesLEQ(left, right, parent)
                        : AddParentClauses(left, right, parent);
-    q.push_back(move(parent));
+    q.push_back(std::move(parent));
   }
   vector<TLit> output = std::move(q.front());
   q.pop_front();
@@ -232,7 +232,7 @@ vector<pair<TWeight, TLit>> Totalizer<TLit, TWeight>::EncodeGenTotalizer(
     vector<pair<TWeight, TLit>> right = std::move(q.front());
     q.pop_front();
     vector<pair<TWeight, TLit>> parent = AddAndMerge(left, right);
-    q.push_back(move(parent));
+    q.push_back(std::move(parent));
   }
   vector<pair<TWeight, TLit>> output = std::move(q.front());
   q.pop_front();
@@ -375,7 +375,7 @@ bool Totalizer<TLit, TWeight>::IsLeqGenTotExceedsThr(
     vector<pair<TWeight, TLit>> parent =
         CountAndMerge(left, right, parent_size);
     if (clause_count > clauses_threshold) return false;
-    q.push_back(move(parent));
+    q.push_back(std::move(parent));
   }
 
   return clause_count <= clauses_threshold;
