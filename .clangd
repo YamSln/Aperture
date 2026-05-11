@@ -4,6 +4,8 @@ CompileFlags:
     - -std=c++20
     - -Wall
     - -I/usr/include
+    - -isystem
+    - /usr/include/c++/13
 
 Index:
   Background: Build
