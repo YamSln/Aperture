@@ -60,14 +60,14 @@ void AperturePython::SetVerbosityLevel(int level) {
 
 TLiterals AperturePython::GetTotalizer(TLiterals& lits, TLit selector,
                                        optional<uint64_t> rhs_simplification) {
-  return TLiterals(move(
-      Solver<TLit, TWeight>::GetTotalizer(lits, selector, rhs_simplification)));
+  return TLiterals(
+      Solver<TLit, TWeight>::GetTotalizer(lits, selector, rhs_simplification));
 }
 
 TWLiterals AperturePython::GetGenTotalizer(
     TWLiterals& wlits, TLit selector, optional<uint64_t> rhs_simplification) {
-  return TWLiterals(move(Solver<TLit, TWeight>::GetGenTotalizer(
-      wlits, selector, rhs_simplification)));
+  return TWLiterals(Solver<TLit, TWeight>::GetGenTotalizer(wlits, selector,
+                                                           rhs_simplification));
 }
 
 bool AperturePython::AddConstraintLessThan(TLiterals& lits, uint64_t rhs,

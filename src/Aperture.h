@@ -70,6 +70,8 @@ class Solver {
   std::string GetLatestErrorReason() const;
   // Sets the parameter `param_name` with the given value.
   void SetParam(const std::string& param_name, double value);
+  // Interrupts the current solving process
+  void Interrupt();
 
   // Cardinality and PB Constrains
 

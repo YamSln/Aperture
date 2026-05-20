@@ -1,5 +1,6 @@
 # Params
 CXX = g++
+PYTHON3 ?= python3
 DEBUG_FLAGS = -g -O0 -DDEBUG
 RELEASE_FLAGS = -O3 -DNDEBUG
 RES_FLAGS ?= $(DEBUG_FLAGS)
@@ -232,18 +233,21 @@ lp: lib-pic
 
 # Python bindings (nanobind)
 
-PYTHON_INCLUDES   := $(shell python3 -c "import sysconfig; print(sysconfig.get_path('include'))")
-NANOBIND_DIR      := $(shell python3 -c "import nanobind; import os; print(os.path.dirname(nanobind.include_dir()))")
+PYTHON_INCLUDES   := $(shell $(PYTHON3) -c "import sysconfig; print(sysconfig.get_path('include'))")
+NANOBIND_DIR      := $(shell $(PYTHON3) -c "import nanobind, os; print(os.path.dirname(nanobind.include_dir()))" 2>/dev/null || true)
+ifeq ($(strip $(NANOBIND_DIR)),)
+$(error nanobind not found. Install it with: pip install nanobind)
+endif
 NANOBIND_INCLUDES := $(NANOBIND_DIR)/include
 
-PY_MODULE_NAME	  := pyperture
-PY_SRC_DIR  := $(PROJECT_ROOT)/python
+PY_MODULE_NAME	  := _aperture
+PY_SRC_DIR  := $(PROJECT_ROOT)/aperture/_core
 PY_BUILD_DIR := $(PIC_BUILD_DIR)/python
 PY_SRC_FILES := $(shell find $(PY_SRC_DIR) -name "*.cc")
 PY_OBJ      := $(patsubst $(PY_SRC_DIR)/%.cc,$(PY_BUILD_DIR)/%.o,$(PY_SRC_FILES))
 PY_DEP_FILES := $(PY_OBJ:.o=.d)
 NB_OBJ      := $(PY_BUILD_DIR)/nb_combined.o
-PY_MODULE   := $(PY_SRC_DIR)/$(PY_MODULE_NAME).so
+PY_MODULE   := $(PROJECT_ROOT)/aperture/$(PY_MODULE_NAME).so
 
 PY_CXXFLAGS := $(CXXFLAGS) -fPIC -I$(PYTHON_INCLUDES) -I$(NANOBIND_INCLUDES) -I$(NANOBIND_DIR)/ext/robin_map/include
 

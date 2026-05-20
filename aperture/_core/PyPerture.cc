@@ -8,14 +8,14 @@ using namespace Aperture;
 const char* const __doc__ =
     "Pyperture: A Python interface for the Aperture MaxSAT solver.";
 
-NB_MODULE(pyperture, m) {
+NB_MODULE(_aperture, m) {
   m.doc() = __doc__;
 
   nb::bind_vector<TLiterals>(m, "lits");
   nb::bind_vector<TWLiterals>(m, "wlits");
 
   nb::class_<AperturePython>(m, "Solver")
-      .def(nb::init<const string&>(), nb::arg("sat_solver") = "topor")
+      .def(nb::init<const string&>(), nb::arg("sat_solver") = "glucose")
       .def("add_clause", &AperturePython::AddClause, nb::arg("clause"))
       .def("solve", &AperturePython::Solve,
            nb::arg("assumptions") = TLiterals())
