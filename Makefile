@@ -232,6 +232,7 @@ lib-pic:
 lp: lib-pic
 
 # Python bindings (nanobind)
+ifneq ($(filter lib-python lpy,$(MAKECMDGOALS)),)
 
 PYTHON_INCLUDES   := $(shell $(PYTHON3) -c "import sysconfig; print(sysconfig.get_path('include'))")
 NANOBIND_DIR      := $(shell $(PYTHON3) -c "import nanobind, os; print(os.path.dirname(nanobind.include_dir()))" 2>/dev/null || true)
@@ -266,6 +267,8 @@ lib-python:
 	$(MAKE) $(PY_MODULE) RES_FLAGS="$(RELEASE_FLAGS)"
 
 lpy: lib-python
+
+endif
 
 .DEFAULT_GOAL := rs
 
