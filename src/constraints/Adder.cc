@@ -113,24 +113,24 @@ AdderBits<TLit> Adder<TLit, TWeight>::EncodeAdder(WLits<TLit, TWeight> wlits,
 template <ValidLiteral TLit, ValidWeight TWeight>
 AdderBits<TLit> Adder<TLit, TWeight>::LessThanOrEqualBits(
     AdderBits<TLit> adder_bits, optional<TLit> selector) {
-  const size_t kAdderSize = adder_bits.size();
+  const size_t adder_size = adder_bits.size();
 
-  if (kAdderSize == 0) return {};
+  if (adder_size == 0) return {};
 
   AdderBits<TLit> output{};
 
-  TLit bound_bits[kAdderSize];
-  for (size_t i = 0; i < kAdderSize; i++) {
+  TLit bound_bits[adder_size];
+  for (size_t i = 0; i < adder_size; i++) {
     bound_bits[i] = this->NewVar_();
     output.InsertBit(bound_bits[i], adder_bits.RealIndex(i));
   }
 
-  TLit prefix_bits[kAdderSize];
-  for (size_t i = 0; i < kAdderSize; i++) {
+  TLit prefix_bits[adder_size];
+  for (size_t i = 0; i < adder_size; i++) {
     prefix_bits[i] = this->NewVar_();
   }
 
-  for (size_t i = 0; i < kAdderSize - 1; i++) {
+  for (size_t i = 0; i < adder_size - 1; i++) {
     // p_i -> p_{i+1}
     AddBinaryClause(-prefix_bits[i], prefix_bits[i + 1], selector);
     // p_i -> (a_{i+1} <-> b_{i+1})
@@ -148,15 +148,15 @@ AdderBits<TLit> Adder<TLit, TWeight>::LessThanOrEqualBits(
   }
   // p_{n-1} = true
   if (!selector.has_value()) {
-    TLit clause[] = {prefix_bits[kAdderSize - 1]};
+    TLit clause[] = {prefix_bits[adder_size - 1]};
     this->AddClause_(clause);
   } else {
-    TLit clause[] = {prefix_bits[kAdderSize - 1], selector.value()};
+    TLit clause[] = {prefix_bits[adder_size - 1], selector.value()};
     this->AddClause_(clause);
   }
   // p_{n-1} -> (a_{n-1} -> b_{n-1})
-  AddTernaryClause(-prefix_bits[kAdderSize - 1], -adder_bits[kAdderSize - 1],
-                   bound_bits[kAdderSize - 1], selector);
+  AddTernaryClause(-prefix_bits[adder_size - 1], -adder_bits[adder_size - 1],
+                   bound_bits[adder_size - 1], selector);
 
   return output;
 }

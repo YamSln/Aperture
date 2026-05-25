@@ -232,14 +232,20 @@ lib-pic:
 lp: lib-pic
 
 # Python bindings (nanobind)
-ifneq ($(filter lib-python lpy,$(MAKECMDGOALS)),)
-
 PYTHON_INCLUDES   := $(shell $(PYTHON3) -c "import sysconfig; print(sysconfig.get_path('include'))")
 NANOBIND_DIR      := $(shell $(PYTHON3) -c "import nanobind, os; print(os.path.dirname(nanobind.include_dir()))" 2>/dev/null || true)
-ifeq ($(strip $(NANOBIND_DIR)),)
-$(error nanobind not found. Install it with: pip install nanobind)
+ifeq ($(filter lib-python lpy,$(MAKECMDGOALS)),)
+	ifeq ($(strip $(NANOBIND_DIR)),)
+		NANOBIND_INCLUDES :=
+	else
+		NANOBIND_INCLUDES := $(NANOBIND_DIR)/include
+	endif
+else
+	ifeq ($(strip $(NANOBIND_DIR)),)
+	$(error nanobind not found. Install it with: pip install nanobind)
+	endif
+	NANOBIND_INCLUDES := $(NANOBIND_DIR)/include
 endif
-NANOBIND_INCLUDES := $(NANOBIND_DIR)/include
 
 PY_MODULE_NAME	  := _aperture
 PY_SRC_DIR  := $(PROJECT_ROOT)/aperture/_core
@@ -267,8 +273,6 @@ lib-python:
 	$(MAKE) $(PY_MODULE) RES_FLAGS="$(RELEASE_FLAGS)"
 
 lpy: lib-python
-
-endif
 
 .DEFAULT_GOAL := rs
 

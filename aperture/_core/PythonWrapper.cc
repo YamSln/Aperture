@@ -173,8 +173,20 @@ bool AperturePython::SolveBlackBox(
   return latest_status_ == SolverStatus::SAT;
 }
 
-bool AperturePython::SolveOBV(TLiterals& assumps, TLiterals& targets) {
-  latest_status_ = Solver<TLit, TWeight>::SolveOBV(assumps, targets);
+bool AperturePython::SolveOBV(
+    TLiterals& assumps, TLiterals& targets,
+    optional<nb::typed<nb::callable, bool(TLiterals&)>>
+        callback_on_solution_found) {
+  function<bool(span<const TLit>, void*)> callback_wrapper = nullptr;
+  if (callback_on_solution_found.has_value()) {
+    callback_wrapper = [callback_on_solution_found](span<const TLit> lits,
+                                                    void* user_data) {
+      TLiterals callback_lits(lits.begin(), lits.end());
+      return nb::cast<bool>(callback_on_solution_found.value()(callback_lits));
+    };
+  }
+  latest_status_ =
+      Solver<TLit, TWeight>::SolveOBV(assumps, targets, callback_wrapper);
   return latest_status_ == SolverStatus::SAT;
 }
 

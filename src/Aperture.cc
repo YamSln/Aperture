@@ -33,7 +33,8 @@ Solver<TLit, TWeight>::Solver(
     SolverType solver_type,
     const unordered_map<string, string>& sat_solver_params,
     const SolverOptions& options)
-    : Solver(SolverFactory<TLit>::CreateSolver(solver_type, sat_solver_params),
+    : Solver(SolverFactory<TLit>::CreateSolver(solver_type, sat_solver_params,
+                                               true),
              options) {
   logger_.Log("Using {} as main SAT solver.", SolverTypeToName(solver_type));
 }

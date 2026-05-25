@@ -57,7 +57,9 @@ class AperturePython : public Solver<TLit, TWeight> {
           pb_func,
       std::optional<nb::typed<nb::callable, bool(TLiterals&)>>
           callback_on_solution_found = std::nullopt);
-  bool SolveOBV(TLiterals& assumps, TLiterals& targets);
+  bool SolveOBV(TLiterals& assumps, TLiterals& targets,
+                std::optional<nb::typed<nb::callable, bool(TLiterals&)>>
+                    callback_on_solution_found = std::nullopt);
 
  private:
   SolverStatus latest_status_;
