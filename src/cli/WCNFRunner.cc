@@ -35,6 +35,7 @@ int WCNFRunner<TLit, TWeight>::Run(const string& wcnf_file_path,
     solver_options.polosat_weighted_obv_strategy = true;
     solver_options.max_props_per_model = 100000000;
     solver_options.mrs_beaver_size_switch_to_complete = 3500000;
+    solver_options.mrs_beaver_seed = 1;
   } else {
     srand(solver_options.mrs_beaver_seed);
     solver_options.mrs_beaver_max_non_improving_iterations = 80;

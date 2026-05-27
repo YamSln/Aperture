@@ -270,7 +270,7 @@ MBExitReason Solver<TLit, TWeight>::MrsBeaver(
       if (problem_weighted) {
         WeightedShuffle();
       } else {
-        random_shuffle(target_wlits.begin(), target_wlits.end());
+        shuffle(target_wlits.begin(), target_wlits.end(), rng);
       }
     } else {
       if (problem_weighted) {
