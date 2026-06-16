@@ -24,6 +24,9 @@ struct SolverOptions {
 
   VerbosityLevel verbosity_level = VerbosityLevel::VVERBOSE;
   bool output_coloring = false;
+  // Note: WCNF mode enables optimizations for solving a single WCNF instance,
+  // but may invalidate the solver state afterwards. Therefore, it should not be
+  // used if the user intends to make further incremental solving queries.
   bool wcnf_mode = false;
   uint64_t wcnf_max_var = 0;
 
