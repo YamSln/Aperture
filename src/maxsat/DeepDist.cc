@@ -30,7 +30,9 @@ void Solver<TLit, TWeight>::DeepDist(
   deepdist::lit** dd_clause_lit;
   int* dd_clause_lit_count;
   int dd_nvars = MaxVar();
-  int dd_nclauses = clauses_.size();
+  int dd_nclauses =
+      GetNumClauses() +
+      (solver_options_.wcnf_mode ? 0 : static_cast<int>(wlits.size()));
   unsigned long long* dd_clause_weight;
 
   // dd_num_hclauses: the number of hard clauses

@@ -32,7 +32,9 @@ void Solver<TLit, TWeight>::NuWeighting(
     nuweighting::clauselit** nuweighting_clause_lit;
     int* nuweighting_clause_lit_count;
     int nuweighting_nvars = MaxVar();
-    int nuweighting_nclauses = clauses_.size();
+    int nuweighting_nclauses =
+        GetNumClauses() +
+        (solver_options_.wcnf_mode ? 0 : static_cast<int>(wlits.size()));
     unsigned long long* nuweighting_clause_weight;
 
     const int problem_weighted = nuweighting_solver.problem_weighted;

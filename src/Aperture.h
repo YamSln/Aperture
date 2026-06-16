@@ -280,6 +280,8 @@ class Solver {
   // Returns the value of a given literal in the latest solution of the given
   // solver
   TLitValue LitValue(TLit lit, const SatSolver<TLit>& solver) const;
+  // Returns the number of clauses currently in the solver
+  size_t GetNumClauses() const;
   void InitParamsMap();
 
   /* SAT Based Optimization Solving */

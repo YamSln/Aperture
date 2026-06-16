@@ -278,6 +278,11 @@ TLitValue Solver<TLit, TWeight>::LitValue(TLit lit,
 }
 
 template <ValidLiteral TLit, ValidWeight TWeight>
+size_t Solver<TLit, TWeight>::GetNumClauses() const {
+  return clause_offsets_.size() - 1;
+}
+
+template <ValidLiteral TLit, ValidWeight TWeight>
 void Solver<TLit, TWeight>::InitParamsMap() {
   params_map_["use_initial_solver"] = &solver_options_.use_initial_solver;
   params_map_["initial_solver_type"] = &solver_options_.initial_solver_type;
