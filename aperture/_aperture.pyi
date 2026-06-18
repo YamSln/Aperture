@@ -1,4 +1,4 @@
-from typing import Any, Callable, Optional, Tuple, List, TypeAlias
+from typing import Any, Callable, Optional, Tuple, List, TypeAlias, overload
 
 # Type aliases matching C++ binding types
 TLit: TypeAlias = int
@@ -8,7 +8,7 @@ TWLiterals: TypeAlias = List[TWLit]
 
 
 class Solver:
-    """Python wrapper around the Aperture solver."""
+    """Python wrapper for Aperture solver."""
 
     def __init__(self, sat_solver: str = ...) -> None:
         """Create a solver instance.
@@ -191,7 +191,8 @@ class Solver:
             
         """
         ...
-
+        
+    @overload
     def add_constraint_less_than(self, lits: TLiterals, rhs: int, selector: Optional[TLit] = ...) -> bool:
         """Add a strict less-than cardinality constraint.
 
@@ -206,6 +207,7 @@ class Solver:
         """
         ...
 
+    @overload
     def add_constraint_less_than_equal(self, lits: TLiterals, rhs: int, selector: Optional[TLit] = ...) -> bool:
         """Add a less-than-or-equal cardinality constraint.
 
@@ -220,6 +222,7 @@ class Solver:
         """
         ...
 
+    @overload
     def add_constraint_equal(self, lits: TLiterals, rhs: int, selector: Optional[TLit] = ...) -> bool:
         """Add an equality cardinality constraint.
 
@@ -236,6 +239,7 @@ class Solver:
         """
         ...
 
+    @overload
     def add_constraint_greater_than_equal(self, lits: TLiterals, rhs: int, selector: Optional[TLit] = ...) -> bool:
         """Add a greater-than-or-equal cardinality constraint.
 
@@ -250,6 +254,7 @@ class Solver:
         """
         ...
 
+    @overload
     def add_constraint_greater_than(self, lits: TLiterals, rhs: int, selector: Optional[TLit] = ...) -> bool:
         """Add a strict greater-than cardinality constraint.
 

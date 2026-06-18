@@ -37,7 +37,7 @@ def build_extension():
 build_extension()
 
 setup(
-    name="aperture-sat",
+    name="aperture-solver",
     version=__version__,
     description="A SAT-based optimization solver",
     long_description=open("aperture/docs/PYTHONAPI.md").read(),

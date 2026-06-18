@@ -152,7 +152,7 @@ class Solver {
   bool AddPBConstraint(WLits<TLit, TWeight> wlits, Predicate pred, uint64_t rhs,
                        std::optional<TLit> selector = std::nullopt);
 
-  /* SAT Based Optimization Solving */
+  /* SAT-based Optimization Solving */
 
   // Solving MaxSAT
 
@@ -251,7 +251,7 @@ class Solver {
 
   Totalizer<TLit, TWeight> totalizer_;
 
-  /* SAT Based Optimization Solving */
+  /* SAT-based Optimization Solving */
 
   TWeight latest_maxsat_value_ = std::numeric_limits<TWeight>::max();
   bool latest_maxsat_fixed_model_value_ = false;
@@ -284,7 +284,7 @@ class Solver {
   size_t GetNumClauses() const;
   void InitParamsMap();
 
-  /* SAT Based Optimization Solving */
+  /* SAT-based Optimization Solving */
 
   std::unique_ptr<SatSolver<TLit>> BuildSecondarySolver(
       SolverType solver_type, Lits<TLit> lits,

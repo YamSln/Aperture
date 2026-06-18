@@ -588,3 +588,119 @@ TEST(MaxSATTest, TESTFixingModelValueWithZeroCost) {
   EXPECT_EQ(solver->GetLatestMaxSATValue(), 0);
   EXPECT_EQ(solver->IsLatestMaxSATFixedModelValue(), true);
 }
+
+TEST(MaxSATTest, TESTFixingModelValueWithNonZeroCost) {
+  unique_ptr<Solver<TLit>> solver =
+      make_unique<Solver<TLit>>(SolverType::TOPOR);
+
+  TLit v1 = solver->NewVar();
+  TLit v2 = solver->NewVar();
+  TLit v3 = solver->NewVar();
+
+  vector<TLit> hard_clause1 = {v1, v2};
+  vector<TLit> hard_clause2 = {-v2, v3};
+
+  vector<TLit> soft_clause1 = {-v1};
+  vector<TLit> soft_clause2 = {-v3};
+
+  TLit v4 = solver->NewVar();
+  TLit v5 = solver->NewVar();
+
+  soft_clause1.push_back(v4);
+  soft_clause2.push_back(v5);
+
+  vector<pair<TWeight, TLit>> soft_wlits = {{9, v4}, {4, v5}};
+
+  EXPECT_TRUE(solver->AddClause(hard_clause1));
+  EXPECT_TRUE(solver->AddClause(hard_clause2));
+  EXPECT_TRUE(solver->AddClause(soft_clause1));
+  EXPECT_TRUE(solver->AddClause(soft_clause2));
+
+  SolverStatus status = solver->SolveWeightedMaxSAT({}, soft_wlits, false);
+  EXPECT_EQ(SolverStatus::SAT, status);
+  EXPECT_EQ(solver->IsLatestMaxSATOptimal(), true);
+  EXPECT_EQ(solver->GetLatestMaxSATValue(), 4);
+  EXPECT_EQ(solver->IsLatestMaxSATFixedModelValue(), false);
+
+  vector<TLit> assumptions = {v1};
+
+  SolverStatus status2 =
+      solver->SolveWeightedMaxSAT(assumptions, soft_wlits, false);
+
+  EXPECT_EQ(SolverStatus::SAT, status2);
+  EXPECT_EQ(solver->IsLatestMaxSATOptimal(), true);
+  EXPECT_EQ(solver->GetLatestMaxSATValue(), 9);
+  EXPECT_EQ(solver->IsLatestMaxSATFixedModelValue(), false);
+
+  SolverStatus status3 = solver->SolveWeightedMaxSAT({}, soft_wlits, true);
+  EXPECT_EQ(SolverStatus::SAT, status3);
+  EXPECT_EQ(solver->IsLatestMaxSATOptimal(), true);
+  EXPECT_EQ(solver->GetLatestMaxSATValue(), 4);
+  EXPECT_EQ(solver->IsLatestMaxSATFixedModelValue(), true);
+
+  SolverStatus status4 =
+      solver->SolveWeightedMaxSAT(assumptions, soft_wlits, true);
+  EXPECT_EQ(SolverStatus::UNSAT, status4);
+}
+
+TEST(MaxSATTest, TESTFixingModelValueClusters) {
+  unique_ptr<Solver<TLit>> solver =
+      make_unique<Solver<TLit>>(SolverType::TOPOR);
+
+  TLit v1 = solver->NewVar();
+  TLit v2 = solver->NewVar();
+  TLit v3 = solver->NewVar();
+  TLit v4 = solver->NewVar();
+
+  vector<TLit> hard_clause1 = {v1, v2};
+  vector<TLit> hard_clause2 = {-v2, v3};
+
+  vector<TLit> soft_clause1 = {-v4};
+  vector<TLit> soft_clause2 = {-v1};
+  vector<TLit> soft_clause3 = {-v3};
+
+  TLit v5 = solver->NewVar();
+  TLit v6 = solver->NewVar();
+  TLit v7 = solver->NewVar();
+
+  soft_clause1.push_back(v5);
+  soft_clause2.push_back(v6);
+  soft_clause3.push_back(v7);
+
+  EXPECT_TRUE(solver->AddClause(hard_clause1));
+  EXPECT_TRUE(solver->AddClause(hard_clause2));
+  EXPECT_TRUE(solver->AddClause(soft_clause1));
+  EXPECT_TRUE(solver->AddClause(soft_clause2));
+  EXPECT_TRUE(solver->AddClause(soft_clause3));
+
+  vector<pair<TWeight, TLit>> cluster1 = {{14, v5}};
+  vector<pair<TWeight, TLit>> cluster2 = {{9, v6}, {4, v7}};
+
+  SolverStatus status = solver->SolveWeightedMaxSAT({}, cluster1, true);
+  EXPECT_EQ(SolverStatus::SAT, status);
+  EXPECT_EQ(solver->IsLatestMaxSATOptimal(), true);
+  EXPECT_EQ(solver->GetLatestMaxSATValue(), 0);
+  EXPECT_EQ(solver->IsLatestMaxSATFixedModelValue(), true);
+
+  SolverStatus status2 = solver->SolveWeightedMaxSAT({}, cluster2, false);
+  EXPECT_EQ(SolverStatus::SAT, status2);
+  EXPECT_EQ(solver->IsLatestMaxSATOptimal(), true);
+  EXPECT_EQ(solver->GetLatestMaxSATValue(), 4);
+  EXPECT_EQ(solver->IsLatestMaxSATFixedModelValue(), false);
+
+  vector<TLit> assumptions = {v4};
+  SolverStatus status3 =
+      solver->SolveWeightedMaxSAT(assumptions, cluster2, true);
+  EXPECT_EQ(SolverStatus::UNSAT, status3);
+
+  SolverStatus status4 = solver->SolveWeightedMaxSAT({}, cluster2, true);
+  EXPECT_EQ(SolverStatus::SAT, status4);
+  EXPECT_EQ(solver->IsLatestMaxSATOptimal(), true);
+  EXPECT_EQ(solver->GetLatestMaxSATValue(), 4);
+  EXPECT_EQ(solver->IsLatestMaxSATFixedModelValue(), true);
+
+  assumptions = {v1};
+  SolverStatus status5 =
+      solver->SolveWeightedMaxSAT(assumptions, cluster1, true);
+  EXPECT_EQ(SolverStatus::UNSAT, status5);
+}

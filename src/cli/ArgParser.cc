@@ -58,10 +58,10 @@ pair<ExternalOptions, SolverOptions> ArgParser::ParseArgs(
   solver_args.add_flag("--output-coloring", solver_options.output_coloring,
                        "Enable colored output in the terminal");
 
-  // Sat based optimization solving options
+  // SAT-based optimization solving options
 
   auto* optimization_sub_command = solver_args.add_subcommand(
-      "opti", "Options for Sat based optimization solving.");
+      "opti", "Options for SAT-based optimization solving.");
   optimization_sub_command->add_flag(
       "-i,--use-initial-solver", solver_options.use_initial_solver,
       "Use a different (possibly non-incremental) SAT solver in order to find "
@@ -118,7 +118,7 @@ pair<ExternalOptions, SolverOptions> ArgParser::ParseArgs(
       "Enable the use of a local search solver in MaxSAT solving");
   max_sat_sub_command->add_flag("--use-sat-based-optimization",
                                 solver_options.use_sat_based_optimization,
-                                "Enable the use of SAT based optimization in "
+                                "Enable the use of SAT-based optimization in "
                                 "MaxSAT solving (e.g. Mrs-Beaver)");
   max_sat_sub_command
       ->add_option("--local-search-solver-type",

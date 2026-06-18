@@ -30,7 +30,7 @@ struct SolverOptions {
   bool wcnf_mode = false;
   uint64_t wcnf_max_var = 0;
 
-  /* SAT Based Optimization Solving */
+  /* SAT-based Optimization Solving */
 
   bool use_initial_solver = false;
   SolverType initial_solver_type = SolverType::KISSAT;

@@ -101,10 +101,6 @@ void Solver<TLit, TWeight>::LSU(Lits<TLit> assumps,
               assumptions.push_back(latest_bound_assumption);
             }
           } else {
-            logger_.Log(VerbosityLevel::VERBOSE,
-                        "LSU bounding with totalizer bit {}, corresponding to "
-                        "weight {}.",
-                        tot[i].second, tot[i].first);
             assumptions.push_back(-tot[i].second);
           }
         }

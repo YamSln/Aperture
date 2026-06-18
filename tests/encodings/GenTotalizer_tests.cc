@@ -20,13 +20,13 @@ TEST(GenTotalizerTests, TestSimpleGenTotalizer) {
 
   TLit v1 = solver->NewVar();
   TLit v2 = solver->NewVar();
-  TLit v3 = solver->NewVar();
-  TLit v4 = solver->NewVar();
   TLit selector = solver->NewVar();
 
   vector<pair<TWeight, TLit>> pb_lits = {{1, v1}, {1, v2}};
   vector<pair<TWeight, TLit>> totalizer =
       solver->GetGenTotalizer(pb_lits, selector);
+
+  ASSERT_EQ(totalizer.size(), 2);
 }
 
 TEST(GenTotalizerTests, TestRhsSimplification) {
@@ -36,7 +36,6 @@ TEST(GenTotalizerTests, TestRhsSimplification) {
   TLit v1 = solver->NewVar();
   TLit v2 = solver->NewVar();
   TLit v3 = solver->NewVar();
-  TLit v4 = solver->NewVar();
   TLit selector = solver->NewVar();
 
   vector<pair<TWeight, TLit>> pb_lits = {{1, v1}, {1, v2}, {1, v3}};
@@ -44,9 +43,7 @@ TEST(GenTotalizerTests, TestRhsSimplification) {
   vector<pair<TWeight, TLit>> totalizer =
       solver->GetGenTotalizer(pb_lits, selector, rhs_simplification);
 
-  for (const auto& [weight, lit] : totalizer) {
-    cout << "Weight: " << weight << ", Lit: " << lit << endl;
-  }
+  ASSERT_EQ(totalizer.size(), 3);
 }
 
 TEST(GenTotalizerTests, TestComplexGenTotalizer) {
@@ -134,11 +131,6 @@ TEST(GenTotalizerTests, TestComplexGenTotalizer) {
   vector<pair<TWeight, TLit>> totalizer =
       solver->GetGenTotalizer(wlits, selector, 40);
 
-  int i = 0;
-  for (const auto& [weight, lit] : totalizer) {
-    cout << i << ": Weight: " << weight << ", Lit: " << lit << endl;
-  }
-
   vector<TLit> assumptions;
   assumptions.push_back(-selector);
   SolverStatus status = solver->Solve(assumptions);
@@ -155,6 +147,5 @@ TEST(GenTotalizerTests, TestComplexGenTotalizer) {
       totalizer_value += weight;
     }
   }
-  cout << "Totalizer value: " << totalizer_value << endl;
   EXPECT_LT(totalizer_value, 40);
 }

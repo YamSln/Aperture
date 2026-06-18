@@ -6,7 +6,7 @@ using namespace std;
 using namespace Aperture;
 
 const char* const __doc__ =
-    "Pyperture: A Python interface for the Aperture MaxSAT solver.";
+    "Pyperture: A Python interface for Aperture Solver.";
 
 NB_MODULE(_aperture, m) {
   m.doc() = __doc__;

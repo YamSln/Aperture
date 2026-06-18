@@ -9,7 +9,7 @@ Aperture is a SAT-based optimization solver providing a Python interface for:
 ## Installation
 
 ```bash
-pip install aperture-sat
+pip install aperture-solver
 ```
 
 ## Quick Start

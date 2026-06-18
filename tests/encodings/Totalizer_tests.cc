@@ -61,10 +61,6 @@ TEST(TotalizerTests, TestTotalizer) {
   lits = {};
   totalizer = solver->GetTotalizer(lits, selector, 2);
   ASSERT_EQ(totalizer.size(), 0);
-  for (TLit lit : totalizer) {
-    ASSERT_NE(lit, 0);
-    ASSERT_TRUE(lit_abs<TLit>(lit) > selector);
-  }
 
   // One lit with rhs simplification
   lits = {v1};
