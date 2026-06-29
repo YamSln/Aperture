@@ -68,6 +68,8 @@ For example, to solve a problem specified in `input.acnf`, you can run:
 ./aperture -m acnf input.acnf
 ```
 
+The solver can also be configured using an `.ini` file, such as `aperture.ini`, which is located in the root directory of the repository. The `.ini` file allows to configure solver parameters. Note that the `.ini` file is optional, and if it is not present, the solver will use the default configurations in `src/AOptions.h`. The `.ini` file can be used to configure solver parameters, instead of writing them manually in the command line when running the solver's executable.
+
 ## ACNF
 
 The ACNF is an input file format for Aperture. It is a superset of the DIMACS CNF format, i.e. every valid (DIMACS) CNF file is also a valid ACNF file. The ACNF format also allows the following line formats:
