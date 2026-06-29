@@ -107,11 +107,11 @@ For incremental MaxSAT solving, we implemented a custom fuzzer that generates ra
 
 # Experimental Results
 
-This section describes how to reproduce the experimental results for both non-incremental and incremental MaxSAT solving as described in the Aperture's original paper.
+This section describes how to reproduce the experimental results for both non-incremental and incremental MaxSAT solving as described in SOFT'26 and POS'26 workshop contributions.
 
 ## Non-incremental MaxSAT
 
-To reproduce the experimental results for non-incremental MaxSAT, compile Aperture as an executable by running `make -j` and run it against (each instance of) the MaxSAT evaluation (MSE) anytime benchmarks of [MSE 2022 (was called 'incomplete')](https://maxsat-evaluations.github.io/2022/benchmarks.html), [MSE 2023](https://maxsat-evaluations.github.io/2023/benchmarks.html) and [MSE 2024](https://maxsat-evaluations.github.io/2024/benchmarks.html). To run the specific configurations described in the paper, use the following options:
+To reproduce the experimental results for non-incremental MaxSAT, compile Aperture as an executable by running `make -j` and run it against (each instance of) the MaxSAT evaluation (MSE) anytime benchmarks of [MSE 2022 (was called 'incomplete')](https://maxsat-evaluations.github.io/2022/benchmarks.html), [MSE 2023](https://maxsat-evaluations.github.io/2023/benchmarks.html) and [MSE 2024](https://maxsat-evaluations.github.io/2024/benchmarks.html). To run the specific configurations described in SOFT'26 and POS'26 workshop contributions, use the following options:
 
 - Aperture-Glucose:
   - Weighted: `./build/aperture_static <input_file> -s glucose opti -i --initial-solver kissat`
