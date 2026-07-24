@@ -296,9 +296,13 @@ class Solver {
   TWeight UnweightedCostIn(const SatSolver<TLit>& solver,
                            Lits<TLit> lits) const;
   TWeight UnweightedCost(Lits<TLit> lits) const;
+  TWeight UnweightedCostFrom(std::function<TLitValue(TLit)> LitValueFunc,
+                             Lits<TLit> lits) const;
   TWeight WeightedCostIn(const SatSolver<TLit>& solver,
                          WLits<TLit, TWeight> wlits) const;
   TWeight WeightedCost(WLits<TLit, TWeight> wlits) const;
+  TWeight WeightedCostFrom(std::function<TLitValue(TLit)> LitValueFunc,
+                           WLits<TLit, TWeight> wlits) const;
 
   void FixTargetsPolaritiesOptimisticFor(SatSolver<TLit>& solver,
                                          Lits<TLit> targets);

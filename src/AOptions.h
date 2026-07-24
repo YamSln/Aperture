@@ -29,6 +29,7 @@ struct SolverOptions {
   // used if the user intends to make further incremental solving queries.
   bool wcnf_mode = false;
   uint64_t wcnf_max_var = 0;
+  uint64_t wcnf_soft_base_index = 0;
 
   /* SAT-based Optimization Solving */
 

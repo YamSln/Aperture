@@ -30,6 +30,7 @@ int WCNFRunner<TLit, TWeight>::Run(const string& wcnf_file_path,
   unordered_map<string, string> sat_solver_params;
 
   solver_options.wcnf_max_var = wcnf_data.max_var;
+  solver_options.wcnf_soft_base_index = wcnf_data.num_hard_clauses;
   if (weighted_maxsat) {
     solver_options.use_polosat_props_per_model_threshold = true;
     solver_options.polosat_weighted_obv_strategy = true;

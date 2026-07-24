@@ -332,21 +332,47 @@ void Solver<TLit, TWeight>::InitParamsMap() {
 template <ValidLiteral TLit, ValidWeight TWeight>
 TWeight Solver<TLit, TWeight>::UnweightedCostIn(const SatSolver<TLit>& solver,
                                                 Lits<TLit> lits) const {
-  TWeight cost = 0;
-  for (TLit lit : lits) {
-    if (LitValue(lit, solver) == TLitValue::TRUE) {
-      ++cost;
-    }
-  }
-  return cost;
+  return UnweightedCostFrom([&](TLit lit) { return LitValue(lit, solver); },
+                            lits);
 }
 
 template <ValidLiteral TLit, ValidWeight TWeight>
 TWeight Solver<TLit, TWeight>::UnweightedCost(Lits<TLit> lits) const {
+  return UnweightedCostFrom([&](TLit lit) { return LitValue(lit); }, lits);
+}
+
+template <ValidLiteral TLit, ValidWeight TWeight>
+TWeight Solver<TLit, TWeight>::UnweightedCostFrom(
+    std::function<TLitValue(TLit)> LitValueFunc, Lits<TLit> lits) const {
   TWeight cost = 0;
-  for (TLit lit : lits) {
-    if (LitValue(lit) == TLitValue::TRUE) {
-      ++cost;
+  if (solver_options_.wcnf_mode) {
+    const size_t base_index = solver_options_.wcnf_soft_base_index;
+    const TLit max_var = solver_options_.wcnf_max_var + 1;
+    int begin = 0;
+    int end = 0;
+    bool clause_satisfied = false;
+    int clause_index = 0;
+    for (TLit lit : lits) {
+      if (LitValueFunc(lit) == TLitValue::TRUE) {
+        clause_index = base_index + (lit - max_var);
+        begin = clause_offsets_[clause_index];
+        end = clause_offsets_[clause_index + 1];
+        clause_satisfied = false;
+        for (int i = begin; i < end - 1; i++) {
+          if (LitValueFunc(clauses_[i]) == TLitValue::TRUE) {
+            clause_satisfied = true;
+            break;
+          }
+        }
+        if (!clause_satisfied) {
+          cost += 1;
+        }
+      }
+    }
+    return cost;
+  } else {
+    for (TLit lit : lits) {
+      if (LitValueFunc(lit) == TLitValue::TRUE) cost += 1;
     }
   }
   return cost;
@@ -355,21 +381,48 @@ TWeight Solver<TLit, TWeight>::UnweightedCost(Lits<TLit> lits) const {
 template <ValidLiteral TLit, ValidWeight TWeight>
 TWeight Solver<TLit, TWeight>::WeightedCostIn(
     const SatSolver<TLit>& solver, WLits<TLit, TWeight> wlits) const {
-  TWeight cost = 0;
-  for (const auto& [weight, lit] : wlits) {
-    if (LitValue(lit, solver) == TLitValue::TRUE) {
-      cost += weight;
-    }
-  }
-  return cost;
+  return WeightedCostFrom([&](TLit lit) { return LitValue(lit, solver); },
+                          wlits);
 }
 
 template <ValidLiteral TLit, ValidWeight TWeight>
 TWeight Solver<TLit, TWeight>::WeightedCost(WLits<TLit, TWeight> wlits) const {
+  return WeightedCostFrom([&](TLit lit) { return LitValue(lit); }, wlits);
+}
+
+template <ValidLiteral TLit, ValidWeight TWeight>
+TWeight Solver<TLit, TWeight>::WeightedCostFrom(
+    std::function<TLitValue(TLit)> LitValueFunc,
+    WLits<TLit, TWeight> wlits) const {
   TWeight cost = 0;
-  for (const auto& [weight, lit] : wlits) {
-    if (LitValue(lit) == TLitValue::TRUE) {
-      cost += weight;
+  if (solver_options_.wcnf_mode) {
+    const size_t base_index = solver_options_.wcnf_soft_base_index;
+    const TLit max_var = solver_options_.wcnf_max_var + 1;
+    int begin = 0;
+    int end = 0;
+    bool clause_satisfied = false;
+    int clause_index = 0;
+    for (const auto& [weight, lit] : wlits) {
+      if (LitValueFunc(lit) == TLitValue::TRUE) {
+        clause_index = base_index + (lit - max_var);
+        begin = clause_offsets_[clause_index];
+        end = clause_offsets_[clause_index + 1];
+        clause_satisfied = false;
+        for (int i = begin; i < end - 1; i++) {
+          if (LitValueFunc(clauses_[i]) == TLitValue::TRUE) {
+            clause_satisfied = true;
+            break;
+          }
+        }
+        if (!clause_satisfied) {
+          cost += weight;
+        }
+      }
+    }
+    return cost;
+  } else {
+    for (const auto& [weight, lit] : wlits) {
+      if (LitValueFunc(lit) == TLitValue::TRUE) cost += weight;
     }
   }
   return cost;

@@ -18,17 +18,6 @@ void Solver<TLit, TWeight>::MaxSATObvBS(
   }
   Lits<TLit> target_lits_view(target_lits);
 
-  auto TotalCostFunc = [&](function<TLitValue(TLit)> LitValueFunc,
-                           void* user_ds) {
-    TWeight cost = 0;
-    for (const auto& [weight, lit] : targets) {
-      if (LitValueFunc(lit) == TLitValue::TRUE) {
-        cost += weight;
-      }
-    }
-    return cost;
-  };
-
   TWeight total_fixed_cost = 0;
   vector<TLitValue> current_model = latest_solution_;
 
@@ -44,8 +33,12 @@ void Solver<TLit, TWeight>::MaxSATObvBS(
       if (solver_options_.disable_polosat) {
         status = SolveForMaxSAT(assumptions, targets);
       } else {
-        status = Polosat(assumptions, target_lits_view.subspan(i + 1),
-                         TotalCostFunc, nullptr, nullptr, true);
+        status = Polosat(
+            assumptions, target_lits_view.subspan(i + 1),
+            [&](function<TLitValue(TLit)> LitValueFunc, void* user_ds) {
+              return WeightedCostFrom(LitValueFunc, targets);
+            },
+            nullptr, nullptr, true);
       }
 
       if (status != SolverStatus::SAT) {
@@ -168,13 +161,7 @@ MBExitReason Solver<TLit, TWeight>::MrsBeaver(
   Polosat(
       assumptions, target_lits,
       [&](function<TLitValue(TLit)> LitValueFunc, void* user_ds) {
-        TWeight cost = 0;
-        for (const auto& [weight, lit] : target_wlits) {
-          if (LitValueFunc(lit) == TLitValue::TRUE) {
-            cost += weight;
-          }
-        }
-        return cost;
+        return WeightedCostFrom(LitValueFunc, target_wlits);
       },
       [&](Lits<TLit>, void*) { return ShouldStopAfterSolutionFound(); },
       nullptr, true);
