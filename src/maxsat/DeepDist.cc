@@ -140,16 +140,36 @@ void Solver<TLit, TWeight>::DeepDist(
     }
   } else {
     unordered_map<TLit, int> targets_num_appearences;
+    bool target_found_in_clause = false;
+    TLit first_target_found = 0;
     for (size_t i = 0; i < clause_offsets_.size() - 1; ++i) {
-      const size_t start = clause_offsets_[i];
-      const size_t len = clause_offsets_[i + 1] - start;
+      size_t start = clause_offsets_[i];
+      size_t len = clause_offsets_[i + 1] - start;
+      target_found_in_clause = false;
+      first_target_found = 0;
       for (size_t j = 0; j < len; ++j) {
         TLit lit = clauses_[start + j];
         if (target_lit_to_weights.count(lit) != 0) {
+          if (target_found_in_clause) {
+            // Multiple targets in the same clause
+            targets_num_appearences[lit] = 2;
+            targets_num_appearences[-lit] = 2;
+            if (first_target_found != 0) {
+              targets_num_appearences[first_target_found] = 2;
+              targets_num_appearences[-first_target_found] = 2;
+              first_target_found = 0;
+            }
+            continue;
+          }
+          // Potential relaxation literal
           targets_num_appearences[lit]++;
+          target_found_in_clause = true;
+          first_target_found = lit;
         }
         if (target_lit_to_weights.count(-lit) != 0) {
+          // The target negation is also a target
           targets_num_appearences[-lit] = 2;
+          targets_num_appearences[lit] = 2;
         }
       }
     }
