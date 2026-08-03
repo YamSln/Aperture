@@ -4,8 +4,23 @@
 
 # Aperture: A SAT-based Optimization Tool
 
-Aperture is an anytime and incremental SAT-based optimization tool that supports SAT solving and three SAT-based optimization paradigms: MaxSAT, Modulo Bit-Vector Optimization (OBV) and Black-Box Optimization.  Across all three paradigms, the solver is incremental and anytime, while it is complete for MaxSAT and OBV but incomplete for black-box optimization.
-Aperture provides an in-memory C++ (native and IPAMIR) and Python API as well as a unified text input format called ACNF, which allows to specify clauses, constraints, encodings, and solve types in a flexible manner.
+Aperture is an anytime, incremental, SAT-based optimization tool supporting SAT solving and three optimization paradigms: MaxSAT, Modulo Bit-Vector Optimization (OBV), and Black-Box Optimization.
+The solver is complete for MaxSAT and OBV, and incomplete for Black-Box Optimization. Aperture provides a C++ API (native and IPAMIR), a Python API, and a unified text input format (ACNF) for specifying clauses, constraints, encodings, and solve types.
+
+Aperture participated in the (anytime) MaxSAT Evaluation 2026, ranking 1st in all weighted tracks, with a notable gap over the second-place solver. Full results are available at [MaxSAT Evaluation 2026 Rankings](https://maxsat-evaluations.github.io/2026/rankings.html).
+
+| Track                | Time Limit | Ranking     |
+|----------------------|------------|-------------|
+| Weighted             | 60s        | 1st / 12  🥇  |
+| Weighted             | 300s       | 1st / 12  🥇  |
+| Weighted             | 1707s      | 1st / 12  🥇  |
+| Unweighted           | 60s        | 3rd / 11  🥉  |
+| Unweighted           | 300s       | 1st / 11  🥇  |
+| Unweighted           | 1707s      | 2nd / 11  🥈  |
+
+Aperture is introduced in the following paper. Please cite it if you refer to this work:
+
+         “Aperture: an Anytime, Complete and Incremental MaxSAT Solver”, Alexander Nadel, Yam Slonimski, Ofer Strichman, FMCAD'26.
 
 # Features
 
