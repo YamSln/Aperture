@@ -746,6 +746,9 @@ void Internal::preprocess_quickly (bool always) {
     return;
   if (!opts.preprocesslight)
     return;
+  if (opts.preprocesslightmaxclauses > 0 &&
+      stats.current.irredundant > opts.preprocesslightmaxclauses)
+    return;
   if (!always && stats.searches > 1)
     return;
   START (preprocess);

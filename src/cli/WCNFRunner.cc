@@ -58,6 +58,7 @@ int WCNFRunner<TLit, TWeight>::Run(const string& wcnf_file_path,
       sat_solver_params["chrono"] = weighted_maxsat ? "-1" : "100";
       sat_solver_params["confl_to_chrono"] = "0";
     case SolverType::CADICAL:
+      sat_solver_params["preprocesslightmaxclauses"] = "3000000";
       if (!weighted_maxsat) {
         solver_options.use_polosat_model_per_sec_threshold = true;
         solver_options.min_models_per_sec = 2.5;
