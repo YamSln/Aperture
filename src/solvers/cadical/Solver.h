@@ -11,8 +11,7 @@ template <ValidLiteral TLit = int32_t>
 class CadicalSatSolver final : public SatSolver<TLit> {
  public:
   CadicalSatSolver(
-      const std::unordered_map<std::string, std::string>& params = {})
-      : max_var_(0) {}
+      const std::unordered_map<std::string, std::string>& params = {});
   bool AddClause(Lits<TLit> lits) override;
   SolverStatus Solve(Lits<TLit> assumps, uint64_t conflict_threshold) override;
   std::vector<Aperture::TLitValue> GetModel() const override;

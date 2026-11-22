@@ -480,6 +480,11 @@ int Internal::lucky_phases () {
   if (!opts.lucky)
     return 0;
 
+  for (auto idx : vars) {
+    if (phases.forced[idx])
+      return 0;
+  }
+
   if (!opts.luckyassumptions && !assumptions.empty ())
     return 0;
   // TODO: Some of the lucky assignments can also be found if there are

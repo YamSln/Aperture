@@ -7,6 +7,16 @@ using namespace ApertureCaDiCaL;
 using namespace std;
 
 template <ValidLiteral TLit>
+CadicalSatSolver<TLit>::CadicalSatSolver(
+    const unordered_map<string, string>& params)
+    : max_var_(0) {
+  if (params.find("preprocesslightmaxclauses") != params.end()) {
+    cadical_.set("preprocesslightmaxclauses",
+                 stoi(params.at("preprocesslightmaxclauses")));
+  }
+}
+
+template <ValidLiteral TLit>
 bool CadicalSatSolver<TLit>::AddClause(Lits<TLit> lits) {
   for (TLit lit : lits) {
     cadical_.add(lit);
